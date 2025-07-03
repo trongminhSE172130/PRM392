@@ -2,7 +2,7 @@ package com.fpt.project.data.model;
 
 public class ChatMessage {
     private int id;
-    private int userId;
+    private String userId;  // Changed to String to match User.id
     private String message;
     private String senderType; // customer, store
     private boolean isRead;
@@ -11,7 +11,7 @@ public class ChatMessage {
     // Constructors
     public ChatMessage() {}
 
-    public ChatMessage(int userId, String message, String senderType) {
+    public ChatMessage(String userId, String message, String senderType) {  // userId now String
         this.userId = userId;
         this.message = message;
         this.senderType = senderType;
@@ -22,8 +22,8 @@ public class ChatMessage {
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
-    public int getUserId() { return userId; }
-    public void setUserId(int userId) { this.userId = userId; }
+    public String getUserId() { return userId; }  // Return String
+    public void setUserId(String userId) { this.userId = userId; }  // Parameter String
 
     public String getMessage() { return message; }
     public void setMessage(String message) { this.message = message; }

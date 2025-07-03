@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.fpt.project.R;
 import com.fpt.project.data.model.Product;
+import com.fpt.project.data.repository.ProductRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,7 @@ public class HomeFragment extends Fragment {
     private RecyclerView recyclerViewProducts;
     private ProductAdapter productAdapter;
     private List<Product> productList;
+    private ProductRepository productRepository;
 
     @Nullable
     @Override
@@ -35,6 +37,7 @@ public class HomeFragment extends Fragment {
 
     private void initViews(View view) {
         recyclerViewProducts = view.findViewById(R.id.recyclerViewProducts);
+        productRepository = new ProductRepository(getContext());
     }
 
     private void setupRecyclerView() {
@@ -45,9 +48,45 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadProducts() {
-        // TODO: Load products from API
-        // For now, add dummy data
-        loadDummyProducts();
+        // Load products from API
+        loadProductsFromAPI();
+    }
+    
+    private void loadProductsFromAPI() {
+        productRepository.getProducts(1, 20, null, new ProductRepository.ProductCallback<List<Product>>() {
+            @Override
+            public void onSuccess(List<Product> products) {
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
+                        productList.clear();
+                        productList.addAll(products);
+                        productAdapter.notifyDataSetChanged();
+                    });
+                }
+            }
+            
+            @Override
+            public void onError(String message) {
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
+                        android.widget.Toast.makeText(getContext(), 
+                            "Failed to load products: " + message, 
+                            android.widget.Toast.LENGTH_SHORT).show();
+                    });
+                }
+            }
+            
+            @Override
+            public void onFailure(String error) {
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
+                        android.widget.Toast.makeText(getContext(), 
+                            "Cannot connect to server. Please check your internet connection.", 
+                            android.widget.Toast.LENGTH_LONG).show();
+                    });
+                }
+            }
+        });
     }
 
     private void loadDummyProducts() {

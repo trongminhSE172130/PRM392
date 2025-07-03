@@ -1,12 +1,14 @@
 package com.fpt.project.data.model;
 
 public class User {
-    private int id;
+    private String id;  // Changed to String to match API response
     private String username;
     private String email;
     private String fullName;
+    private String full_name;  // API returns "full_name" 
     private String phone;
     private String address;
+    private String role;  // Added role field from API
     private String createdAt;
 
     // Constructors
@@ -21,8 +23,8 @@ public class User {
     }
 
     // Getters and Setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
@@ -30,8 +32,17 @@ public class User {
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
-    public String getFullName() { return fullName; }
+    public String getFullName() { 
+        // Prioritize full_name from API, fallback to fullName
+        return full_name != null ? full_name : fullName; 
+    }
     public void setFullName(String fullName) { this.fullName = fullName; }
+
+    public String getFull_name() { return full_name; }
+    public void setFull_name(String full_name) { this.full_name = full_name; }
+
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
 
     public String getPhone() { return phone; }
     public void setPhone(String phone) { this.phone = phone; }

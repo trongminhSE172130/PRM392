@@ -13,6 +13,8 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.fpt.project.MainActivity;
 import com.fpt.project.R;
+import com.fpt.project.data.model.User;
+import com.fpt.project.data.repository.AuthRepository;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -20,6 +22,7 @@ public class LoginActivity extends AppCompatActivity {
     private MaterialButton btnLogin;
     private View progressBar;
     private SharedPreferences sharedPreferences;
+    private AuthRepository authRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,9 +33,10 @@ public class LoginActivity extends AppCompatActivity {
         setupClickListeners();
         
         sharedPreferences = getSharedPreferences("app_prefs", MODE_PRIVATE);
+        authRepository = new AuthRepository(this);
         
         // Check if user is already logged in
-        if (isUserLoggedIn()) {
+        if (authRepository.isUserLoggedIn()) {
             navigateToMain();
         }
     }
@@ -66,9 +70,8 @@ public class LoginActivity extends AppCompatActivity {
 
         showLoading(true);
         
-        // TODO: Implement actual API call
-        // For now, simulate login with dummy data
-        simulateLogin(email, password);
+        // Call real API
+        performRealLogin(email, password);
     }
 
     private boolean validateInput(String email, String password) {
@@ -99,25 +102,37 @@ public class LoginActivity extends AppCompatActivity {
         return true;
     }
 
-    private void simulateLogin(String email, String password) {
-        // Simulate network delay
-        btnLogin.postDelayed(() -> {
-            showLoading(false);
-            
-            // For demo purposes, accept any valid email/password
-            if (email.contains("@") && password.length() >= 6) {
-                // Save login state
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putBoolean("is_logged_in", true);
-                editor.putString("user_email", email);
-                editor.apply();
-                
-                Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show();
-                navigateToMain();
-            } else {
-                Toast.makeText(this, "Invalid credentials", Toast.LENGTH_SHORT).show();
+    private void performRealLogin(String email, String password) {
+        authRepository.login(email, password, new AuthRepository.AuthCallback<User>() {
+            @Override
+            public void onSuccess(User user) {
+                runOnUiThread(() -> {
+                    showLoading(false);
+                    Toast.makeText(LoginActivity.this, 
+                        "Welcome " + user.getFullName() + "!", 
+                        Toast.LENGTH_SHORT).show();
+                    navigateToMain();
+                });
             }
-        }, 2000);
+            
+            @Override
+            public void onError(String message) {
+                runOnUiThread(() -> {
+                    showLoading(false);
+                    Toast.makeText(LoginActivity.this, message, Toast.LENGTH_LONG).show();
+                });
+            }
+            
+            @Override
+            public void onFailure(String error) {
+                runOnUiThread(() -> {
+                    showLoading(false);
+                    Toast.makeText(LoginActivity.this, 
+                        "Cannot connect to server. Please check your internet connection.", 
+                        Toast.LENGTH_LONG).show();
+                });
+            }
+        });
     }
 
     private void showLoading(boolean show) {
@@ -127,7 +142,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private boolean isUserLoggedIn() {
-        return sharedPreferences.getBoolean("is_logged_in", false);
+        return authRepository.isUserLoggedIn();
     }
 
     private void navigateToMain() {

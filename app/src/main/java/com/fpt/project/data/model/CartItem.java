@@ -2,7 +2,7 @@ package com.fpt.project.data.model;
 
 public class CartItem {
     private int id;
-    private int userId;
+    private String userId;  // Changed to String to match User.id
     private int productId;
     private int quantity;
     private String createdAt;
@@ -11,7 +11,7 @@ public class CartItem {
     // Constructors
     public CartItem() {}
 
-    public CartItem(int userId, int productId, int quantity) {
+    public CartItem(String userId, int productId, int quantity) {  // userId now String
         this.userId = userId;
         this.productId = productId;
         this.quantity = quantity;
@@ -21,8 +21,8 @@ public class CartItem {
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
-    public int getUserId() { return userId; }
-    public void setUserId(int userId) { this.userId = userId; }
+    public String getUserId() { return userId; }  // Return String
+    public void setUserId(String userId) { this.userId = userId; }  // Parameter String
 
     public int getProductId() { return productId; }
     public void setProductId(int productId) { this.productId = productId; }

@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Order {
     private int id;
-    private int userId;
+    private String userId;  // Changed to String to match User.id
     private double totalAmount;
     private String status; // pending, confirmed, shipped, delivered, cancelled
     private String shippingAddress;
@@ -17,7 +17,7 @@ public class Order {
     // Constructors
     public Order() {}
 
-    public Order(int userId, double totalAmount, String shippingAddress, String paymentMethod) {
+    public Order(String userId, double totalAmount, String shippingAddress, String paymentMethod) {  // userId now String
         this.userId = userId;
         this.totalAmount = totalAmount;
         this.shippingAddress = shippingAddress;
@@ -30,8 +30,8 @@ public class Order {
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
-    public int getUserId() { return userId; }
-    public void setUserId(int userId) { this.userId = userId; }
+    public String getUserId() { return userId; }  // Return String
+    public void setUserId(String userId) { this.userId = userId; }  // Parameter String
 
     public double getTotalAmount() { return totalAmount; }
     public void setTotalAmount(double totalAmount) { this.totalAmount = totalAmount; }

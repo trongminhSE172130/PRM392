@@ -13,6 +13,8 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.fpt.project.MainActivity;
 import com.fpt.project.R;
+import com.fpt.project.data.model.User;
+import com.fpt.project.data.repository.AuthRepository;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -20,6 +22,7 @@ public class RegisterActivity extends AppCompatActivity {
     private MaterialButton btnSignUp;
     private View progressBar;
     private SharedPreferences sharedPreferences;
+    private AuthRepository authRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +33,7 @@ public class RegisterActivity extends AppCompatActivity {
         setupClickListeners();
         
         sharedPreferences = getSharedPreferences("app_prefs", MODE_PRIVATE);
+        authRepository = new AuthRepository(this);
     }
 
     private void initViews() {
@@ -67,9 +71,8 @@ public class RegisterActivity extends AppCompatActivity {
 
         showLoading(true);
         
-        // TODO: Implement actual API call
-        // For now, simulate registration
-        simulateRegistration(fullName, username, email, phone, address, password);
+        // Call real API
+        performRealRegistration(fullName, username, email, phone, address, password);
     }
 
     private boolean validateInput(String fullName, String username, String email, String phone, 
@@ -144,27 +147,40 @@ public class RegisterActivity extends AppCompatActivity {
         return true;
     }
 
-    private void simulateRegistration(String fullName, String username, String email, 
-                                    String phone, String address, String password) {
-        // Simulate network delay
-        btnSignUp.postDelayed(() -> {
-            showLoading(false);
-            
-            // For demo purposes, always succeed
-            // Save user data
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean("is_logged_in", true);
-            editor.putString("user_email", email);
-            editor.putString("user_full_name", fullName);
-            editor.putString("user_username", username);
-            editor.putString("user_phone", phone);
-            editor.putString("user_address", address);
-            editor.apply();
-            
-            Toast.makeText(this, "Registration successful!", Toast.LENGTH_SHORT).show();
-            navigateToMain();
-        }, 2000);
+    private void performRealRegistration(String fullName, String username, String email, 
+                                      String phone, String address, String password) {
+        authRepository.register(username, email, password, fullName, phone, address, 
+            new AuthRepository.AuthCallback<User>() {
+                @Override
+                public void onSuccess(User user) {
+                    runOnUiThread(() -> {
+                        showLoading(false);
+                        Toast.makeText(RegisterActivity.this, "Registration successful!", Toast.LENGTH_SHORT).show();
+                        navigateToMain();
+                    });
+                }
+                
+                @Override
+                public void onError(String message) {
+                    runOnUiThread(() -> {
+                        showLoading(false);
+                        Toast.makeText(RegisterActivity.this, "Registration failed: " + message, Toast.LENGTH_LONG).show();
+                    });
+                }
+                
+                            @Override
+            public void onFailure(String error) {
+                runOnUiThread(() -> {
+                    showLoading(false);
+                    Toast.makeText(RegisterActivity.this, 
+                        "Cannot connect to server. Please check your internet connection.", 
+                        Toast.LENGTH_LONG).show();
+                });
+            }
+            });
     }
+
+
 
     private void showLoading(boolean show) {
         progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
