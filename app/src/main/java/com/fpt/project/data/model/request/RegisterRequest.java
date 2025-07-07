@@ -1,27 +1,24 @@
 package com.fpt.project.data.model.request;
 
+import com.google.gson.annotations.SerializedName;
+
 public class RegisterRequest {
-    private String username;
     private String email;
     private String password;
+    
+    @SerializedName("full_name")  // API expects "full_name" not "fullName"
     private String fullName;
+    
     private String phone;
-    private String address;
 
-    public RegisterRequest(String username, String email, String password, 
-                          String fullName, String phone, String address) {
-        this.username = username;
+    public RegisterRequest(String email, String password, String fullName, String phone) {
         this.email = email;
         this.password = password;
         this.fullName = fullName;
         this.phone = phone;
-        this.address = address;
     }
 
     // Getters and Setters
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
-
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
@@ -33,7 +30,4 @@ public class RegisterRequest {
 
     public String getPhone() { return phone; }
     public void setPhone(String phone) { this.phone = phone; }
-
-    public String getAddress() { return address; }
-    public void setAddress(String address) { this.address = address; }
 }

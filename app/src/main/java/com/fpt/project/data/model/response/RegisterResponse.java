@@ -2,13 +2,13 @@ package com.fpt.project.data.model.response;
 
 import com.fpt.project.data.model.User;
 
-public class LoginResponse {
+public class RegisterResponse {
     private boolean success;
     private String message;
-    private LoginData data;
+    private RegisterData data;
 
     // Inner class for nested data structure
-    public static class LoginData {
+    public static class RegisterData {
         private User user;
         private String token;
 
@@ -20,9 +20,9 @@ public class LoginResponse {
     }
 
     // Constructors
-    public LoginResponse() {}
+    public RegisterResponse() {}
 
-    public LoginResponse(boolean success, String message, LoginData data) {
+    public RegisterResponse(boolean success, String message, RegisterData data) {
         this.success = success;
         this.message = message;
         this.data = data;
@@ -35,9 +35,9 @@ public class LoginResponse {
     public String getMessage() { return message; }
     public void setMessage(String message) { this.message = message; }
 
-    public LoginData getData() { return data; }
-    public void setData(LoginData data) { this.data = data; }
-
+    public RegisterData getData() { return data; }
+    public void setData(RegisterData data) { this.data = data; }
+    
     // Convenience methods for backward compatibility
     public User getUser() { 
         return data != null ? data.getUser() : null; 

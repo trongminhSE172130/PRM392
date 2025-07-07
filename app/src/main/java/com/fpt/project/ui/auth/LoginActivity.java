@@ -108,10 +108,17 @@ public class LoginActivity extends AppCompatActivity {
             public void onSuccess(User user) {
                 runOnUiThread(() -> {
                     showLoading(false);
-                    Toast.makeText(LoginActivity.this, 
-                        "Welcome " + user.getFullName() + "!", 
-                        Toast.LENGTH_SHORT).show();
-                    navigateToMain();
+                    if (user != null) {
+                        String welcomeName = user.getFullName() != null ? user.getFullName() : "User";
+                        Toast.makeText(LoginActivity.this, 
+                            "Welcome " + welcomeName + "!", 
+                            Toast.LENGTH_SHORT).show();
+                        navigateToMain();
+                    } else {
+                        Toast.makeText(LoginActivity.this, 
+                            "Login successful but user data is invalid", 
+                            Toast.LENGTH_LONG).show();
+                    }
                 });
             }
             
@@ -119,7 +126,9 @@ public class LoginActivity extends AppCompatActivity {
             public void onError(String message) {
                 runOnUiThread(() -> {
                     showLoading(false);
-                    Toast.makeText(LoginActivity.this, message, Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this, 
+                        message != null ? message : "Login failed", 
+                        Toast.LENGTH_LONG).show();
                 });
             }
             

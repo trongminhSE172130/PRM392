@@ -10,6 +10,7 @@ import com.fpt.project.data.model.request.LoginRequest;
 import com.fpt.project.data.model.request.RegisterRequest;
 import com.fpt.project.data.model.response.ApiResponse;
 import com.fpt.project.data.model.response.LoginResponse;
+import com.fpt.project.data.model.response.RegisterResponse;
 
 import java.util.List;
 
@@ -31,7 +32,7 @@ public interface ApiService {
     Call<LoginResponse> login(@Body LoginRequest request);
     
     @POST(ApiConfig.AUTH_REGISTER)
-    Call<ApiResponse<User>> register(@Body RegisterRequest request);
+    Call<RegisterResponse> register(@Body RegisterRequest request);
     
     @POST(ApiConfig.AUTH_LOGOUT)
     Call<ApiResponse<Object>> logout();

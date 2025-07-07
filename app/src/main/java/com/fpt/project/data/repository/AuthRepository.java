@@ -9,6 +9,7 @@ import com.fpt.project.data.model.request.LoginRequest;
 import com.fpt.project.data.model.request.RegisterRequest;
 import com.fpt.project.data.model.response.ApiResponse;
 import com.fpt.project.data.model.response.LoginResponse;
+import com.fpt.project.data.model.response.RegisterResponse;
 import com.fpt.project.data.network.ApiService;
 import com.fpt.project.data.network.NetworkClient;
 
@@ -38,71 +39,131 @@ public class AuthRepository {
     
     // Login method
     public void login(String email, String password, AuthCallback<User> callback) {
+        Log.d(TAG, "Starting login for email: " + email);
         LoginRequest request = new LoginRequest(email, password);
         
         Call<LoginResponse> call = apiService.login(request);
         call.enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                Log.d(TAG, "Login response received. Code: " + response.code());
+                Log.d(TAG, "Response body is null: " + (response.body() == null));
+                
                 if (response.isSuccessful() && response.body() != null) {
                     LoginResponse loginResponse = response.body();
+                    Log.d(TAG, "Login response success: " + loginResponse.isSuccess());
+                    Log.d(TAG, "Login response message: " + loginResponse.getMessage());
                     
                     if (loginResponse.isSuccess()) {
                         User user = loginResponse.getUser();
                         String token = loginResponse.getToken();
                         
-                        // Save user data, token and login state
-                        saveUserData(user, token);
+                        Log.d(TAG, "=== LOGIN API RESPONSE DEBUG ===");
+                        Log.d(TAG, "User object: " + (user != null ? "EXISTS" : "NULL"));
+                        if (user != null) {
+                            Log.d(TAG, "User ID: " + user.getId());
+                            Log.d(TAG, "User Email: " + user.getEmail());
+                            Log.d(TAG, "User FullName: " + user.getFullName());
+                            Log.d(TAG, "User Role: " + user.getRole());
+                            Log.d(TAG, "User Phone: " + user.getPhone());
+                        }
+                        Log.d(TAG, "Token: " + (token != null ? "YES (length=" + token.length() + ")" : "NULL"));
+                        Log.d(TAG, "================================");
                         
-                        callback.onSuccess(user);
+                        if (user != null) {
+                            // Save user data, token and login state
+                            Log.d(TAG, "Calling saveUserData...");
+                            saveUserData(user, token);
+                            Log.d(TAG, "saveUserData completed, calling success callback");
+                            callback.onSuccess(user);
+                        } else {
+                            Log.e(TAG, "User object is null in response");
+                            callback.onError("Login failed: Invalid user data received");
+                        }
                     } else {
-                        callback.onError("Login failed: Invalid credentials");
+                        String errorMessage = loginResponse.getMessage() != null ? 
+                            loginResponse.getMessage() : "Invalid credentials";
+                        Log.w(TAG, "Login failed: " + errorMessage);
+                        callback.onError("Login failed: " + errorMessage);
                     }
                 } else {
-                    callback.onError("Login failed: " + response.code());
+                    Log.e(TAG, "Login failed with code: " + response.code());
+                    String errorBody = "";
+                    try {
+                        if (response.errorBody() != null) {
+                            errorBody = response.errorBody().string();
+                            Log.e(TAG, "Error body: " + errorBody);
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error reading error body: " + e.getMessage());
+                    }
+                    callback.onError("Login failed: " + response.code() + " " + errorBody);
                 }
             }
             
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
-                Log.e(TAG, "Login failure: " + t.getMessage());
+                Log.e(TAG, "Login network failure: " + t.getMessage(), t);
                 callback.onFailure("Network error: " + t.getMessage());
             }
         });
     }
     
-    // Register method
-    public void register(String username, String email, String password, 
-                        String fullName, String phone, String address, 
+    // Register method  
+    public void register(String email, String password, String fullName, String phone,
                         AuthCallback<User> callback) {
         
-        RegisterRequest request = new RegisterRequest(username, email, password, fullName, phone, address);
+        Log.d(TAG, "Starting registration for email: " + email);
+        RegisterRequest request = new RegisterRequest(email, password, fullName, phone);
         
-        Call<ApiResponse<User>> call = apiService.register(request);
-        call.enqueue(new Callback<ApiResponse<User>>() {
+        Call<RegisterResponse> call = apiService.register(request);
+        call.enqueue(new Callback<RegisterResponse>() {
             @Override
-            public void onResponse(Call<ApiResponse<User>> call, Response<ApiResponse<User>> response) {
+            public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {
+                Log.d(TAG, "Register response received. Code: " + response.code());
+                
                 if (response.isSuccessful() && response.body() != null) {
-                    ApiResponse<User> apiResponse = response.body();
+                    RegisterResponse registerResponse = response.body();
+                    Log.d(TAG, "Register response success: " + registerResponse.isSuccess());
                     
-                    if (apiResponse.isSuccess()) {
-                        User user = apiResponse.getData();
+                    if (registerResponse.isSuccess()) {
+                        User user = registerResponse.getUser();
+                        String token = registerResponse.getToken();
                         
-                        // Save user data and login state
-                        saveUserData(user);
+                        Log.d(TAG, "User received: " + (user != null ? user.getEmail() : "null"));
+                        Log.d(TAG, "Token received: " + (token != null ? "yes" : "null"));
                         
-                        callback.onSuccess(user);
+                        if (user != null) {
+                            // Save user data, token and login state
+                            saveUserData(user, token);
+                            callback.onSuccess(user);
+                        } else {
+                            Log.e(TAG, "User object is null in response");
+                            callback.onError("Registration failed: Invalid user data received");
+                        }
                     } else {
-                        callback.onError(apiResponse.getMessage());
+                        String errorMessage = registerResponse.getMessage() != null ? 
+                            registerResponse.getMessage() : "Registration failed";
+                        Log.w(TAG, "Registration failed: " + errorMessage);
+                        callback.onError("Registration failed: " + errorMessage);
                     }
                 } else {
-                    callback.onError("Registration failed: " + response.code());
+                    Log.e(TAG, "Registration failed with code: " + response.code());
+                    String errorBody = "";
+                    try {
+                        if (response.errorBody() != null) {
+                            errorBody = response.errorBody().string();
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error reading error body: " + e.getMessage());
+                    }
+                    callback.onError("Registration failed: " + response.code() + " " + errorBody);
                 }
             }
             
             @Override
-            public void onFailure(Call<ApiResponse<User>> call, Throwable t) {
-                Log.e(TAG, "Register failure: " + t.getMessage());
+            public void onFailure(Call<RegisterResponse> call, Throwable t) {
+                Log.e(TAG, "Register network failure: " + t.getMessage(), t);
                 callback.onFailure("Network error: " + t.getMessage());
             }
         });
@@ -157,20 +218,52 @@ public class AuthRepository {
     
     // Helper methods for local storage
     private void saveUserData(User user, String token) {
+        if (user == null) {
+            Log.w(TAG, "User object is null, cannot save user data");
+            return;
+        }
+        
+        Log.d(TAG, "=== SAVE USER DATA DEBUG ===");
+        Log.d(TAG, "User Email: " + (user.getEmail() != null ? user.getEmail() : "NULL"));
+        Log.d(TAG, "User Name: " + (user.getFullName() != null ? user.getFullName() : "NULL"));
+        Log.d(TAG, "User Role: " + (user.getRole() != null ? user.getRole() : "NULL"));
+        Log.d(TAG, "Token received: " + (token != null ? "YES (length=" + token.length() + ")" : "NULL"));
+        
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("is_logged_in", true);
-        editor.putString("user_email", user.getEmail());
-        editor.putString("user_full_name", user.getFullName());
-        editor.putString("user_username", user.getUsername());
-        editor.putString("user_phone", user.getPhone());
-        editor.putString("user_address", user.getAddress());
-        editor.putString("user_id", user.getId());  // Now String instead of int
-        editor.putString("user_role", user.getRole());
+        
+        // Use null-safe methods to avoid crashes
+        editor.putString("user_email", user.getEmail() != null ? user.getEmail() : "");
+        editor.putString("user_full_name", user.getFullName() != null ? user.getFullName() : "");
+        editor.putString("user_username", user.getUsername() != null ? user.getUsername() : "");
+        editor.putString("user_phone", user.getPhone() != null ? user.getPhone() : "");
+        editor.putString("user_address", user.getAddress() != null ? user.getAddress() : "");
+        editor.putString("user_id", user.getId() != null ? user.getId() : "");
+        editor.putString("user_role", user.getRole() != null ? user.getRole() : "");
         
         // Save auth token
-        editor.putString("auth_token", token);
+        if (token != null) {
+            editor.putString("auth_token", token);
+            Log.d(TAG, "Token saved to SharedPreferences: YES");
+        } else {
+            Log.w(TAG, "Token is NULL - not saving to SharedPreferences");
+        }
         
-        editor.apply();
+        boolean success = editor.commit(); // Use commit instead of apply for immediate feedback
+        Log.d(TAG, "SharedPreferences commit result: " + success);
+        
+        // Verify data was saved correctly
+        String savedToken = sharedPreferences.getString("auth_token", null);
+        String savedEmail = sharedPreferences.getString("user_email", null);
+        boolean savedLoginStatus = sharedPreferences.getBoolean("is_logged_in", false);
+        
+        Log.d(TAG, "=== VERIFICATION AFTER SAVE ===");
+        Log.d(TAG, "Saved login status: " + savedLoginStatus);
+        Log.d(TAG, "Saved email: " + (savedEmail != null ? savedEmail : "NULL"));
+        Log.d(TAG, "Saved token: " + (savedToken != null ? "YES (length=" + savedToken.length() + ")" : "NULL"));
+        Log.d(TAG, "==============================");
+        
+        Log.d(TAG, "User data saved successfully for: " + user.getEmail());
     }
     
     // Overload for backward compatibility (without token)
@@ -209,6 +302,10 @@ public class AuthRepository {
     
     // Get current auth token
     public String getCurrentToken() {
-        return sharedPreferences.getString("auth_token", null);
+        String token = sharedPreferences.getString("auth_token", null);
+        Log.d(TAG, "=== GET TOKEN DEBUG ===");
+        Log.d(TAG, "Token retrieved: " + (token != null ? "YES (length=" + token.length() + ")" : "NULL"));
+        Log.d(TAG, "=======================");
+        return token;
     }
 } 

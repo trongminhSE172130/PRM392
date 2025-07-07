@@ -2,6 +2,7 @@ package com.fpt.project.data.network;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -19,6 +20,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class NetworkClient {
     
+    private static final String TAG = "NetworkClient";
     private static NetworkClient instance;
     private Retrofit retrofit;
     private Context context;
@@ -73,17 +75,24 @@ public class NetworkClient {
         @Override
         public Response intercept(Chain chain) throws IOException {
             Request originalRequest = chain.request();
+            String url = originalRequest.url().toString();
             
             // Get token from SharedPreferences
             SharedPreferences prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE);
             String token = prefs.getString("auth_token", null);
+            
+            Log.d(TAG, "Intercepting request to: " + url);
+            Log.d(TAG, "Token found: " + (token != null ? "YES (length=" + token.length() + ")" : "NO"));
             
             // Add authorization header if token exists
             if (token != null && !token.isEmpty()) {
                 Request newRequest = originalRequest.newBuilder()
                         .header("Authorization", "Bearer " + token)
                         .build();
+                Log.d(TAG, "Added Authorization header to request");
                 return chain.proceed(newRequest);
+            } else {
+                Log.w(TAG, "No token available, proceeding without Authorization header");
             }
             
             return chain.proceed(originalRequest);

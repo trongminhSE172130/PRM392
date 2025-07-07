@@ -1,10 +1,14 @@
 package com.fpt.project.data.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class User {
+    @SerializedName("_id")
     private String id;  // Changed to String to match API response
     private String username;
     private String email;
     private String fullName;
+    @SerializedName("full_name")
     private String full_name;  // API returns "full_name" 
     private String phone;
     private String address;

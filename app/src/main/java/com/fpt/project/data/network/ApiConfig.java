@@ -16,35 +16,35 @@ public class ApiConfig {
     public static final String AUTH_LOGIN = "auth/login";
     public static final String AUTH_REGISTER = "auth/register";
     public static final String AUTH_LOGOUT = "auth/logout";
-    public static final String AUTH_PROFILE = "auth/profile";
+    public static final String AUTH_PROFILE = "auth/me";
     
     // Product APIs
-    public static final String PRODUCTS = "ecommerce/products";
-    public static final String PRODUCTS_FEATURED = "ecommerce/products/featured";
-    public static final String PRODUCT_DETAIL = "ecommerce/products/{id}";
-    public static final String PRODUCT_UPDATE = "ecommerce/products/{id}";
-    public static final String PRODUCT_DELETE = "ecommerce/products/{id}";
-    public static final String PRODUCT_DELETE_PERMANENT = "ecommerce/products/{id}/permanent";
-    public static final String PRODUCT_UPDATE_STOCK = "ecommerce/products/{id}/stock";
-    public static final String PRODUCT_TOGGLE_FEATURED = "ecommerce/products/{id}/featured";
-    public static final String PRODUCTS_BY_CATEGORY = "ecommerce/categories/{categoryId}/products";
+    public static final String PRODUCTS = "/products";
+    public static final String PRODUCTS_FEATURED = "/products/featured";
+    public static final String PRODUCT_DETAIL = "/products/{id}";
+    public static final String PRODUCT_UPDATE = "/products/{id}";
+    public static final String PRODUCT_DELETE = "/products/{id}";
+    public static final String PRODUCT_DELETE_PERMANENT = "/products/{id}/permanent";
+    public static final String PRODUCT_UPDATE_STOCK = "/products/{id}/stock";
+    public static final String PRODUCT_TOGGLE_FEATURED = "/products/{id}/featured";
+    public static final String PRODUCTS_BY_CATEGORY = "/categories/{categoryId}/products";
     
     // Category APIs
-    public static final String CATEGORIES = "ecommerce/categories";
-    public static final String CATEGORIES_ACTIVE = "ecommerce/categories/active";
-    public static final String CATEGORY_DETAIL = "ecommerce/categories/{id}";
-    public static final String CATEGORY_UPDATE = "ecommerce/categories/{id}";
-    public static final String CATEGORY_DELETE = "ecommerce/categories/{id}";
-    public static final String CATEGORY_DELETE_PERMANENT = "ecommerce/categories/{id}/permanent";
+    public static final String CATEGORIES = "/categories";
+    public static final String CATEGORIES_ACTIVE = "/categories/active";
+    public static final String CATEGORY_DETAIL = "/categories/{id}";
+    public static final String CATEGORY_UPDATE = "/categories/{id}";
+    public static final String CATEGORY_DELETE = "/categories/{id}";
+    public static final String CATEGORY_DELETE_PERMANENT = "/categories/{id}/permanent";
     
     // Cart APIs
-    public static final String CART = "ecommerce/cart";
-    public static final String CART_ADD = "ecommerce/cart/add";
-    public static final String CART_UPDATE = "ecommerce/cart/update";
-    public static final String CART_REMOVE = "ecommerce/cart/remove";
-    public static final String CART_CLEAR = "ecommerce/cart/clear";
-    public static final String CART_COUNT = "ecommerce/cart/count";
-    public static final String CART_VALIDATE = "ecommerce/cart/validate";
+    public static final String CART = "/cart";
+    public static final String CART_ADD = "/cart/add";
+    public static final String CART_UPDATE = "/cart/update";
+    public static final String CART_REMOVE = "/cart/remove";
+    public static final String CART_CLEAR = "/cart/clear";
+    public static final String CART_COUNT = "/cart/count";
+    public static final String CART_VALIDATE = "/cart/validate";
     
     // Order APIs (you may need to implement these)
     public static final String ORDERS = "orders";

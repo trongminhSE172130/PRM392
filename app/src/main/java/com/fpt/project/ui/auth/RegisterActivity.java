@@ -18,7 +18,7 @@ import com.fpt.project.data.repository.AuthRepository;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private TextInputEditText etFullName, etUsername, etEmail, etPhone, etAddress, etPassword, etConfirmPassword;
+    private TextInputEditText etFullName, etEmail, etPhone, etPassword, etConfirmPassword;
     private MaterialButton btnSignUp;
     private View progressBar;
     private SharedPreferences sharedPreferences;
@@ -38,10 +38,8 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void initViews() {
         etFullName = findViewById(R.id.etFullName);
-        etUsername = findViewById(R.id.etUsername);
         etEmail = findViewById(R.id.etEmail);
         etPhone = findViewById(R.id.etPhone);
-        etAddress = findViewById(R.id.etAddress);
         etPassword = findViewById(R.id.etPassword);
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
         btnSignUp = findViewById(R.id.btnSignUp);
@@ -58,25 +56,23 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void performRegistration() {
         String fullName = etFullName.getText().toString().trim();
-        String username = etUsername.getText().toString().trim();
         String email = etEmail.getText().toString().trim();
         String phone = etPhone.getText().toString().trim();
-        String address = etAddress.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
         String confirmPassword = etConfirmPassword.getText().toString().trim();
 
-        if (!validateInput(fullName, username, email, phone, address, password, confirmPassword)) {
+        if (!validateInput(fullName, email, phone, password, confirmPassword)) {
             return;
         }
 
         showLoading(true);
         
         // Call real API
-        performRealRegistration(fullName, username, email, phone, address, password);
+        performRealRegistration(fullName, email, phone, password);
     }
 
-    private boolean validateInput(String fullName, String username, String email, String phone, 
-                                String address, String password, String confirmPassword) {
+    private boolean validateInput(String fullName, String email, String phone, 
+                                String password, String confirmPassword) {
         
         if (TextUtils.isEmpty(fullName)) {
             etFullName.setError("Full name is required");
@@ -84,15 +80,9 @@ public class RegisterActivity extends AppCompatActivity {
             return false;
         }
 
-        if (TextUtils.isEmpty(username)) {
-            etUsername.setError("Username is required");
-            etUsername.requestFocus();
-            return false;
-        }
-
-        if (username.length() < 3) {
-            etUsername.setError("Username must be at least 3 characters");
-            etUsername.requestFocus();
+        if (fullName.length() < 2) {
+            etFullName.setError("Full name must be at least 2 characters");
+            etFullName.requestFocus();
             return false;
         }
 
@@ -114,9 +104,10 @@ public class RegisterActivity extends AppCompatActivity {
             return false;
         }
 
-        if (TextUtils.isEmpty(address)) {
-            etAddress.setError("Address is required");
-            etAddress.requestFocus();
+        // Vietnamese phone number validation
+        if (!phone.matches("^(\\+84|0)([0-9]{9,10})$")) {
+            etPhone.setError("Please enter a valid Vietnamese phone number (e.g., 0987654321)");
+            etPhone.requestFocus();
             return false;
         }
 
@@ -147,16 +138,24 @@ public class RegisterActivity extends AppCompatActivity {
         return true;
     }
 
-    private void performRealRegistration(String fullName, String username, String email, 
-                                      String phone, String address, String password) {
-        authRepository.register(username, email, password, fullName, phone, address, 
+    private void performRealRegistration(String fullName, String email, String phone, String password) {
+        authRepository.register(email, password, fullName, phone, 
             new AuthRepository.AuthCallback<User>() {
                 @Override
                 public void onSuccess(User user) {
                     runOnUiThread(() -> {
                         showLoading(false);
-                        Toast.makeText(RegisterActivity.this, "Registration successful!", Toast.LENGTH_SHORT).show();
-                        navigateToMain();
+                        if (user != null) {
+                            String welcomeName = user.getFullName() != null ? user.getFullName() : "User";
+                            Toast.makeText(RegisterActivity.this, 
+                                "Welcome " + welcomeName + "! Registration successful!", 
+                                Toast.LENGTH_SHORT).show();
+                            navigateToMain();
+                        } else {
+                            Toast.makeText(RegisterActivity.this, 
+                                "Registration successful but user data is invalid", 
+                                Toast.LENGTH_LONG).show();
+                        }
                     });
                 }
                 
@@ -164,23 +163,23 @@ public class RegisterActivity extends AppCompatActivity {
                 public void onError(String message) {
                     runOnUiThread(() -> {
                         showLoading(false);
-                        Toast.makeText(RegisterActivity.this, "Registration failed: " + message, Toast.LENGTH_LONG).show();
+                        Toast.makeText(RegisterActivity.this, 
+                            message != null ? message : "Registration failed", 
+                            Toast.LENGTH_LONG).show();
                     });
                 }
                 
-                            @Override
-            public void onFailure(String error) {
-                runOnUiThread(() -> {
-                    showLoading(false);
-                    Toast.makeText(RegisterActivity.this, 
-                        "Cannot connect to server. Please check your internet connection.", 
-                        Toast.LENGTH_LONG).show();
-                });
-            }
+                @Override
+                public void onFailure(String error) {
+                    runOnUiThread(() -> {
+                        showLoading(false);
+                        Toast.makeText(RegisterActivity.this, 
+                            "Cannot connect to server. Please check your internet connection.", 
+                            Toast.LENGTH_LONG).show();
+                    });
+                }
             });
     }
-
-
 
     private void showLoading(boolean show) {
         progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
