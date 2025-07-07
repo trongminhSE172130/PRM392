@@ -19,38 +19,41 @@ public class ApiConfig {
     public static final String AUTH_PROFILE = "auth/me";
     
     // Product APIs
-    public static final String PRODUCTS = "/products";
-    public static final String PRODUCTS_FEATURED = "/products/featured";
-    public static final String PRODUCT_DETAIL = "/products/{id}";
-    public static final String PRODUCT_UPDATE = "/products/{id}";
-    public static final String PRODUCT_DELETE = "/products/{id}";
-    public static final String PRODUCT_DELETE_PERMANENT = "/products/{id}/permanent";
-    public static final String PRODUCT_UPDATE_STOCK = "/products/{id}/stock";
-    public static final String PRODUCT_TOGGLE_FEATURED = "/products/{id}/featured";
-    public static final String PRODUCTS_BY_CATEGORY = "/categories/{categoryId}/products";
+    public static final String PRODUCTS = "products";
+    public static final String PRODUCTS_FEATURED = "products/featured";
+    public static final String PRODUCT_DETAIL = "products/{id}";
+    public static final String PRODUCT_UPDATE = "products/{id}";
+    public static final String PRODUCT_DELETE = "products/{id}";
+    public static final String PRODUCT_DELETE_PERMANENT = "products/{id}/permanent";
+    public static final String PRODUCT_UPDATE_STOCK = "products/{id}/stock";
+    public static final String PRODUCT_TOGGLE_FEATURED = "products/{id}/featured";
+    public static final String PRODUCTS_BY_CATEGORY = "categories/{categoryId}/products";
     
     // Category APIs
-    public static final String CATEGORIES = "/categories";
-    public static final String CATEGORIES_ACTIVE = "/categories/active";
-    public static final String CATEGORY_DETAIL = "/categories/{id}";
-    public static final String CATEGORY_UPDATE = "/categories/{id}";
-    public static final String CATEGORY_DELETE = "/categories/{id}";
-    public static final String CATEGORY_DELETE_PERMANENT = "/categories/{id}/permanent";
+    public static final String CATEGORIES = "categories";
+    public static final String CATEGORIES_ACTIVE = "categories/active";
+    public static final String CATEGORY_DETAIL = "categories/{id}";
+    public static final String CATEGORY_UPDATE = "categories/{id}";
+    public static final String CATEGORY_DELETE = "categories/{id}";
+    public static final String CATEGORY_DELETE_PERMANENT = "categories/{id}/permanent";
     
     // Cart APIs
-    public static final String CART = "/cart";
-    public static final String CART_ADD = "/cart/add";
-    public static final String CART_UPDATE = "/cart/update";
-    public static final String CART_REMOVE = "/cart/remove";
-    public static final String CART_CLEAR = "/cart/clear";
-    public static final String CART_COUNT = "/cart/count";
-    public static final String CART_VALIDATE = "/cart/validate";
+    public static final String USER_CART = "cart";
+    public static final String CART_COUNT = "cart/count";
+    public static final String CART_ADD = "cart/add";
+    public static final String CART_UPDATE = "cart/update";
+    public static final String CART_REMOVE = "cart/remove/{id}";
+    public static final String CART_CLEAR = "cart/clear";
+    public static final String CART_VALIDATE = "cart/validate";
     
     // Order APIs (you may need to implement these)
     public static final String ORDERS = "orders";
     public static final String ORDER_DETAIL = "orders/{id}";
-    public static final String ORDER_STATUS = "orders/{id}/status";
-    
+    public static final String ORDER_STATUS = "orders/{id}/status"; //admin
+    public static final String CHECKOUT = "orders/checkout";
+    public static final String PAYMENT = "orders/{id}/payment";
+    public static final String CANCEL_ORDER = "orders/{id}/cancel";
+    public static final String GET_ORDERS = "orders/admin/all"; //admin
     // Chat APIs (you may need to implement these)
     public static final String CHAT_MESSAGES = "chat/messages";
     public static final String CHAT_MESSAGE_READ = "chat/messages/{id}/read";

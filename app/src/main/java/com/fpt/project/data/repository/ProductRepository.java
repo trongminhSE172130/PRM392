@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.fpt.project.data.model.Product;
 import com.fpt.project.data.model.response.ApiResponse;
+import com.fpt.project.data.model.response.ProductResponse;
 import com.fpt.project.data.network.ApiService;
 import com.fpt.project.data.network.NetworkClient;
 
@@ -30,19 +31,26 @@ public class ProductRepository {
         void onFailure(String error);
     }
     
+    // Interface for product list with pagination
+    public interface ProductListCallback {
+        void onSuccess(List<Product> products, ProductResponse.Pagination pagination);
+        void onError(String message);
+        void onFailure(String error);
+    }
+    
     // Get all products with pagination
-    public void getProducts(int page, int limit, String search, ProductCallback<List<Product>> callback) {
-        Call<ApiResponse<List<Product>>> call = apiService.getProducts(page, limit, search);
-        call.enqueue(new Callback<ApiResponse<List<Product>>>() {
+    public void getProducts(int page, int limit, String search, ProductListCallback callback) {
+        Call<ProductResponse> call = apiService.getProducts(page, limit, search);
+        call.enqueue(new Callback<ProductResponse>() {
             @Override
-            public void onResponse(Call<ApiResponse<List<Product>>> call, Response<ApiResponse<List<Product>>> response) {
+            public void onResponse(Call<ProductResponse> call, Response<ProductResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    ApiResponse<List<Product>> apiResponse = response.body();
+                    ProductResponse productResponse = response.body();
                     
-                    if (apiResponse.isSuccess()) {
-                        callback.onSuccess(apiResponse.getData());
+                    if (productResponse.isSuccess()) {
+                        callback.onSuccess(productResponse.getData(), productResponse.getPagination());
                     } else {
-                        callback.onError(apiResponse.getMessage());
+                        callback.onError("Failed to get products");
                     }
                 } else {
                     callback.onError("Failed to get products: " + response.code());
@@ -50,9 +58,29 @@ public class ProductRepository {
             }
             
             @Override
-            public void onFailure(Call<ApiResponse<List<Product>>> call, Throwable t) {
+            public void onFailure(Call<ProductResponse> call, Throwable t) {
                 Log.e(TAG, "Get products failure: " + t.getMessage());
                 callback.onFailure("Network error: " + t.getMessage());
+            }
+        });
+    }
+    
+    // Get all products (simple callback without pagination) 
+    public void getProducts(int page, int limit, String search, ProductCallback<List<Product>> callback) {
+        getProducts(page, limit, search, new ProductListCallback() {
+            @Override
+            public void onSuccess(List<Product> products, ProductResponse.Pagination pagination) {
+                callback.onSuccess(products);
+            }
+            
+            @Override
+            public void onError(String message) {
+                callback.onError(message);
+            }
+            
+            @Override
+            public void onFailure(String error) {
+                callback.onFailure(error);
             }
         });
     }

@@ -8,8 +8,12 @@ import com.fpt.project.data.model.StoreInfo;
 import com.fpt.project.data.model.User;
 import com.fpt.project.data.model.request.LoginRequest;
 import com.fpt.project.data.model.request.RegisterRequest;
+import com.fpt.project.data.model.request.AddToCartRequest;
+import com.fpt.project.data.model.request.UpdateCartRequest;
 import com.fpt.project.data.model.response.ApiResponse;
+import com.fpt.project.data.model.response.CartResponse;
 import com.fpt.project.data.model.response.LoginResponse;
+import com.fpt.project.data.model.response.ProductResponse;
 import com.fpt.project.data.model.response.RegisterResponse;
 
 import java.util.List;
@@ -46,7 +50,7 @@ public interface ApiService {
     // ======================== PRODUCT APIs ========================
     
     @GET(ApiConfig.PRODUCTS)
-    Call<ApiResponse<List<Product>>> getProducts(
+    Call<ProductResponse> getProducts(
             @Query("page") int page,
             @Query("limit") int limit,
             @Query("search") String search
@@ -108,17 +112,20 @@ public interface ApiService {
     
     // ======================== CART APIs ========================
     
-    @GET(ApiConfig.CART)
+    @GET(ApiConfig.USER_CART)
+    Call<CartResponse> getCart();
+    
+    @GET(ApiConfig.USER_CART)
     Call<ApiResponse<List<CartItem>>> getCartItems();
     
     @POST(ApiConfig.CART_ADD)
-    Call<ApiResponse<CartItem>> addToCart(@Body CartItem cartItem);
+    Call<CartResponse> addToCart(@Body AddToCartRequest request);
     
     @PUT(ApiConfig.CART_UPDATE)
-    Call<ApiResponse<CartItem>> updateCartItem(@Body CartItem cartItem);
+    Call<CartResponse> updateCartItem(@Body UpdateCartRequest request);
     
-    @DELETE(ApiConfig.CART_REMOVE)
-    Call<ApiResponse<Object>> removeCartItem(@Body Object removeRequest);
+    @DELETE("cart/remove/{productId}")
+    Call<CartResponse> removeCartItem(@Path("productId") String productId);
     
     @DELETE(ApiConfig.CART_CLEAR)
     Call<ApiResponse<Object>> clearCart();
