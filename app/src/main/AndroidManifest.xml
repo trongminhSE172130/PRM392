@@ -45,6 +45,20 @@
             android:exported="false"
             android:parentActivityName=".MainActivity" />
             
+
+        <!-- Payment Result Activity - Handle VNPay return URL -->
+        <activity
+            android:name=".ui.cart.PaymentResultActivity"
+            android:exported="true"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="prm392app" android:host="payment" />
+            </intent-filter>
+        </activity>
+            
     </application>
 
 </manifest>

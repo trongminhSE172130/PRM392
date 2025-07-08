@@ -50,6 +50,9 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             loadFragment(new HomeFragment());
         }
+        
+        // Handle navigation from payment result
+        handleNavigationIntent();
     }
 
     private void initViews() {
@@ -101,5 +104,21 @@ public class MainActivity extends AppCompatActivity {
     
     public void navigateToHome() {
         bottomNavigationView.setSelectedItemId(R.id.nav_home);
+    }
+    
+    public void navigateToCart() {
+        bottomNavigationView.setSelectedItemId(R.id.nav_cart);
+    }
+    
+    private void handleNavigationIntent() {
+        Intent intent = getIntent();
+        if (intent != null) {
+            String navigateTo = intent.getStringExtra("navigate_to");
+            if ("home".equals(navigateTo)) {
+                navigateToHome();
+            } else if ("cart".equals(navigateTo)) {
+                navigateToCart();
+            }
+        }
     }
 }

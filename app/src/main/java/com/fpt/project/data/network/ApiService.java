@@ -10,11 +10,15 @@ import com.fpt.project.data.model.request.LoginRequest;
 import com.fpt.project.data.model.request.RegisterRequest;
 import com.fpt.project.data.model.request.AddToCartRequest;
 import com.fpt.project.data.model.request.UpdateCartRequest;
+import com.fpt.project.data.model.request.CheckoutRequest;
+import com.fpt.project.data.model.request.PaymentRequest;
 import com.fpt.project.data.model.response.ApiResponse;
 import com.fpt.project.data.model.response.CartResponse;
 import com.fpt.project.data.model.response.LoginResponse;
 import com.fpt.project.data.model.response.ProductResponse;
 import com.fpt.project.data.model.response.RegisterResponse;
+import com.fpt.project.data.model.response.CheckoutResponse;
+import com.fpt.project.data.model.response.PaymentResponse;
 
 import java.util.List;
 
@@ -155,6 +159,12 @@ public interface ApiService {
             @Path("id") int orderId,
             @Body Object statusUpdate
     );
+    
+    @POST("orders/checkout")
+    Call<CheckoutResponse> checkout(@Body CheckoutRequest request);
+    
+    @POST("orders/{id}/payment")
+    Call<PaymentResponse> createPayment(@Path("id") String orderId, @Body PaymentRequest paymentRequest);
     
     // ======================== CHAT APIs ========================
     

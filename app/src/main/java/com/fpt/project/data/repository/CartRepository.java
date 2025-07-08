@@ -5,10 +5,15 @@ import android.util.Log;
 
 import com.fpt.project.data.model.Cart;
 import com.fpt.project.data.model.CartItem;
+import com.fpt.project.data.model.Order;
 import com.fpt.project.data.model.request.AddToCartRequest;
 import com.fpt.project.data.model.request.UpdateCartRequest;
+import com.fpt.project.data.model.request.CheckoutRequest;
+import com.fpt.project.data.model.request.PaymentRequest;
 import com.fpt.project.data.model.response.ApiResponse;
 import com.fpt.project.data.model.response.CartResponse;
+import com.fpt.project.data.model.response.CheckoutResponse;
+import com.fpt.project.data.model.response.PaymentResponse;
 import com.fpt.project.data.network.ApiConfig;
 import com.fpt.project.data.network.ApiService;
 import com.fpt.project.data.network.NetworkClient;
@@ -390,6 +395,117 @@ public class CartRepository {
             @Override
             public void onFailure(Call<ApiResponse<Object>> call, Throwable t) {
                 Log.e(TAG, "Validate cart failure: " + t.getMessage());
+                callback.onFailure("Network error: " + t.getMessage());
+            }
+        });
+    }
+    
+    // Checkout cart and create order
+    public void checkout(CheckoutRequest request, CartCallback<Order> callback) {
+        Log.d(TAG, "Processing checkout with shipping address: " + request.getShipping_address().getFull_name());
+        
+        Call<CheckoutResponse> call = apiService.checkout(request);
+        call.enqueue(new Callback<CheckoutResponse>() {
+            @Override
+            public void onResponse(Call<CheckoutResponse> call, Response<CheckoutResponse> response) {
+                Log.d(TAG, "Checkout response code: " + response.code());
+                
+                if (response.isSuccessful() && response.body() != null) {
+                    CheckoutResponse checkoutResponse = response.body();
+                    
+                    Log.d(TAG, "Checkout response - Success: " + checkoutResponse.isSuccess() + 
+                          ", Message: " + checkoutResponse.getMessage());
+                    
+                    if (checkoutResponse.isSuccess()) {
+                        Order order = checkoutResponse.getData();
+                        if (order != null) {
+                            String orderId = order.getId();
+                            String orderCode = order.getOrderCode();
+                            Log.d(TAG, "Order created successfully - Order ID: " + orderId + 
+                                  ", Order Code: " + orderCode + ", Total: $" + order.getTotalAmount());
+                            Log.d(TAG, "Order debug - Status: " + order.getStatus() + 
+                                  ", Payment Method: " + order.getPaymentMethod() + 
+                                  ", User ID: " + order.getUserId());
+                            
+                            if (orderId == null || orderId.isEmpty()) {
+                                Log.e(TAG, "WARNING: Order ID is null or empty in response");
+                            }
+                        } else {
+                            Log.e(TAG, "WARNING: Order object is null in checkout response");
+                        }
+                        callback.onSuccess(order);
+                    } else {
+                        callback.onError(checkoutResponse.getMessage());
+                    }
+                } else {
+                    String errorMessage = "Failed to checkout: " + response.code();
+                    if (response.errorBody() != null) {
+                        try {
+                            String errorBody = response.errorBody().string();
+                            Log.e(TAG, "Checkout error body: " + errorBody);
+                            errorMessage += " - " + errorBody;
+                        } catch (Exception e) {
+                            Log.e(TAG, "Error reading error body", e);
+                        }
+                    }
+                    Log.e(TAG, errorMessage);
+                    callback.onError(errorMessage);
+                }
+            }
+            
+            @Override
+            public void onFailure(Call<CheckoutResponse> call, Throwable t) {
+                Log.e(TAG, "Checkout failure: " + t.getMessage());
+                callback.onFailure("Network error: " + t.getMessage());
+            }
+        });
+    }
+    
+    // Create VNPay payment URL
+    public void createPayment(String orderId, String returnUrl, CartCallback<PaymentResponse.PaymentData> callback) {
+        Log.d(TAG, "Creating VNPay payment for order ID: " + orderId + " with return URL: " + returnUrl);
+        
+        PaymentRequest paymentRequest = new PaymentRequest(returnUrl);
+        Call<PaymentResponse> call = apiService.createPayment(orderId, paymentRequest);
+        call.enqueue(new Callback<PaymentResponse>() {
+            @Override
+            public void onResponse(Call<PaymentResponse> call, Response<PaymentResponse> response) {
+                Log.d(TAG, "Payment response code: " + response.code());
+                
+                if (response.isSuccessful() && response.body() != null) {
+                    PaymentResponse paymentResponse = response.body();
+                    
+                    Log.d(TAG, "Payment response - Success: " + paymentResponse.isSuccess() + 
+                          ", Message: " + paymentResponse.getMessage());
+                    
+                    if (paymentResponse.isSuccess()) {
+                        PaymentResponse.PaymentData paymentData = paymentResponse.getData();
+                        if (paymentData != null && paymentData.getPayment_url() != null) {
+                            Log.d(TAG, "VNPay payment URL created: " + paymentData.getPayment_url());
+                        }
+                        callback.onSuccess(paymentData);
+                    } else {
+                        callback.onError(paymentResponse.getMessage());
+                    }
+                } else {
+                    String errorMessage = "Failed to create payment: " + response.code();
+                    if (response.errorBody() != null) {
+                        try {
+                            String errorBody = response.errorBody().string();
+                            Log.e(TAG, "Payment error body: " + errorBody);
+                            errorMessage += " - " + errorBody;
+                        } catch (Exception e) {
+                            Log.e(TAG, "Error reading error body", e);
+                        }
+                    }
+                    Log.e(TAG, errorMessage);
+                    callback.onError(errorMessage);
+                }
+            }
+            
+            @Override
+            public void onFailure(Call<PaymentResponse> call, Throwable t) {
+                Log.e(TAG, "Payment failure: " + t.getMessage());
                 callback.onFailure("Network error: " + t.getMessage());
             }
         });

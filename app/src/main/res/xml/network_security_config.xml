@@ -1,8 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
+    <!-- Local development -->
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">localhost</domain>
         <domain includeSubdomains="true">10.0.2.2</domain>
         <domain includeSubdomains="true">192.168.1.0/24</domain>
     </domain-config>
+    
+    <!-- VNPay payment gateway -->
+    <domain-config>
+        <domain includeSubdomains="true">sandbox.vnpayment.vn</domain>
+        <domain includeSubdomains="true">pay.vnpay.vn</domain>
+        <domain includeSubdomains="true">vnpayment.vn</domain>
+        <!-- Allow banking domains that VNPay redirects to -->
+        <domain includeSubdomains="true">ebank.tpb.vn</domain>
+        <domain includeSubdomains="true">ib.techcombank.com.vn</domain>
+        <domain includeSubdomains="true">ebanking.vietcombank.vn</domain>
+        <domain includeSubdomains="true">ebanking.bidv.vn</domain>
+        <domain includeSubdomains="true">vcbdigibank.vietcombank.vn</domain>
+    </domain-config>
+    
+    <!-- Allow all HTTPS by default (recommended for production) -->
+    <base-config>
+        <trust-anchors>
+            <certificates src="system"/>
+        </trust-anchors>
+    </base-config>
 </network-security-config>
