@@ -6,9 +6,9 @@
         android:title="Home" />
     
     <item
-        android:id="@+id/nav_cart"
-        android:icon="@drawable/ic_shopping_cart"
-        android:title="Cart" />
+        android:id="@+id/nav_category"
+        android:icon="@drawable/ic_category"
+        android:title="Category" />
     
     <item
         android:id="@+id/nav_map"
@@ -16,9 +16,9 @@
         android:title="Store Location" />
     
     <item
-        android:id="@+id/nav_chat"
-        android:icon="@drawable/ic_chat"
-        android:title="Chat" />
+        android:id="@+id/nav_cart"
+        android:icon="@drawable/ic_shopping_cart"
+        android:title="Cart" />
     
     <item
         android:id="@+id/nav_profile"

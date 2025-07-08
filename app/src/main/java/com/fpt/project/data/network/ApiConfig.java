@@ -31,7 +31,6 @@ public class ApiConfig {
     
     // Category APIs
     public static final String CATEGORIES = "categories";
-    public static final String CATEGORIES_ACTIVE = "categories/active";
     public static final String CATEGORY_DETAIL = "categories/{id}";
     public static final String CATEGORY_UPDATE = "categories/{id}";
     public static final String CATEGORY_DELETE = "categories/{id}";

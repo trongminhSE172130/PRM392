@@ -45,6 +45,11 @@
             android:exported="false"
             android:parentActivityName=".MainActivity" />
             
+        <!-- Category Products Activity -->
+        <activity
+            android:name=".ui.category.CategoryProductsActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
 
         <!-- Payment Result Activity - Handle VNPay return URL -->
         <activity

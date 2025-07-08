@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 
 import com.fpt.project.ui.auth.LoginActivity;
 import com.fpt.project.ui.cart.CartFragment;
+import com.fpt.project.ui.category.CategoryFragment;
 import com.fpt.project.ui.chat.ChatFragment;
 import com.fpt.project.ui.home.HomeFragment;
 import com.fpt.project.ui.map.MapFragment;
@@ -66,12 +67,12 @@ public class MainActivity extends AppCompatActivity {
             
             if (itemId == R.id.nav_home) {
                 fragment = new HomeFragment();
-            } else if (itemId == R.id.nav_cart) {
-                fragment = new CartFragment();
+            } else if (itemId == R.id.nav_category) {
+                fragment = new CategoryFragment();
             } else if (itemId == R.id.nav_map) {
                 fragment = new MapFragment();
-            } else if (itemId == R.id.nav_chat) {
-                fragment = new ChatFragment();
+            } else if (itemId == R.id.nav_cart) {
+                fragment = new CartFragment();
             } else if (itemId == R.id.nav_profile) {
                 fragment = new ProfileFragment();
             }

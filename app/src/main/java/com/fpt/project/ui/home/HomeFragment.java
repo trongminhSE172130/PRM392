@@ -45,6 +45,19 @@ public class HomeFragment extends Fragment {
         recyclerViewProducts = view.findViewById(R.id.recyclerViewProducts);
         productRepository = new ProductRepository(getContext());
         cartRepository = new CartRepository(getContext());
+        
+        // Setup chat icon click listener
+        android.widget.ImageView ivChat = view.findViewById(R.id.ivChat);
+        if (ivChat != null) {
+            ivChat.setOnClickListener(v -> {
+                // Navigate to chat fragment or activity
+                if (getActivity() != null && getActivity() instanceof com.fpt.project.MainActivity) {
+                    com.fpt.project.MainActivity mainActivity = (com.fpt.project.MainActivity) getActivity();
+                    // TODO: Navigate to chat - for now show toast
+                    android.widget.Toast.makeText(getContext(), "Chat feature coming soon!", android.widget.Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
     private void setupRecyclerView() {

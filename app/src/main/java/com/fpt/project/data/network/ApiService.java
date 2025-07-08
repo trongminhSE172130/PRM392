@@ -19,6 +19,7 @@ import com.fpt.project.data.model.response.ProductResponse;
 import com.fpt.project.data.model.response.RegisterResponse;
 import com.fpt.project.data.model.response.CheckoutResponse;
 import com.fpt.project.data.model.response.PaymentResponse;
+import com.fpt.project.data.model.response.CategoryResponse;
 
 import java.util.List;
 
@@ -60,6 +61,14 @@ public interface ApiService {
             @Query("search") String search
     );
     
+    @GET(ApiConfig.PRODUCTS)
+    Call<ProductResponse> getProducts(
+            @Query("page") int page,
+            @Query("limit") int limit,
+            @Query("search") String search,
+            @Query("category") String categoryId
+    );
+    
     @POST(ApiConfig.PRODUCTS)
     Call<ApiResponse<Product>> createProduct(@Body Product product);
     
@@ -85,8 +94,8 @@ public interface ApiService {
     Call<ApiResponse<Product>> toggleProductFeatured(@Path("id") int productId);
     
     @GET(ApiConfig.PRODUCTS_BY_CATEGORY)
-    Call<ApiResponse<List<Product>>> getProductsByCategory(
-            @Path("categoryId") int categoryId,
+    Call<ProductResponse> getProductsByCategory(
+            @Path("categoryId") String categoryId,
             @Query("page") int page,
             @Query("limit") int limit
     );
@@ -94,13 +103,10 @@ public interface ApiService {
     // ======================== CATEGORY APIs ========================
     
     @GET(ApiConfig.CATEGORIES)
-    Call<ApiResponse<List<Object>>> getCategories();
+    Call<CategoryResponse> getCategories();
     
     @POST(ApiConfig.CATEGORIES)
     Call<ApiResponse<Object>> createCategory(@Body Object category);
-    
-    @GET(ApiConfig.CATEGORIES_ACTIVE)
-    Call<ApiResponse<List<Object>>> getActiveCategories();
     
     @GET(ApiConfig.CATEGORY_DETAIL)
     Call<ApiResponse<Object>> getCategoryDetail(@Path("id") int categoryId);
