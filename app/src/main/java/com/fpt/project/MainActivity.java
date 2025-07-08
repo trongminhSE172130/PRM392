@@ -111,6 +111,15 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setSelectedItemId(R.id.nav_cart);
     }
     
+    public void navigateToChat() {
+        // Since we don't have a chat tab, we'll create ChatFragment and navigate to it
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, new com.fpt.project.ui.chat.ChatFragment())
+                .addToBackStack("chat")
+                .commit();
+    }
+    
     private void handleNavigationIntent() {
         Intent intent = getIntent();
         if (intent != null) {

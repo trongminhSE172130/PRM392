@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
 }
 
+import org.gradle.api.tasks.compile.JavaCompile
+
 android {
     namespace = "com.fpt.project"
     compileSdk = 35
@@ -28,6 +30,13 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+    }
+    
+    tasks.withType<JavaCompile> {
+        options.compilerArgs.addAll(listOf(
+            "-Xlint:deprecation",
+            "-Xlint:unchecked"
+        ))
     }
 }
 
@@ -64,6 +73,9 @@ dependencies {
     // Google Play Services
     implementation(libs.play.services.location)
     implementation(libs.play.services.maps)
+    
+    // Socket.IO for real-time chat
+    implementation("io.socket:socket.io-client:2.1.0")
     
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

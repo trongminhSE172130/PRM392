@@ -272,9 +272,20 @@ public class AuthRepository {
     }
     
     private void clearUserData() {
+        // Preserve session_id for anonymous access after logout
+        String sessionId = sharedPreferences.getString("session_id", null);
+        
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
+        
+        // Restore session_id if it existed
+        if (sessionId != null) {
+            editor.putString("session_id", sessionId);
+            Log.d(TAG, "Preserved session_id after logout: " + sessionId);
+        }
+        
         editor.apply();
+        Log.d(TAG, "User data cleared, logout completed");
     }
     
     // Check if user is logged in

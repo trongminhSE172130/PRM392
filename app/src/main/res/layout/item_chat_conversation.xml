@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="16dp"
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true">
+
+    <!-- User Avatar -->
+    <FrameLayout
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginEnd="12dp">
+
+        <!-- Avatar Background Circle -->
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_circle"
+            android:backgroundTint="#E3F2FD" />
+
+        <!-- User Avatar Icon -->
+        <ImageView
+            android:id="@+id/ivUserAvatar"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_person"
+            android:scaleType="centerInside"
+            app:tint="#2196F3" />
+
+        <!-- Online Status Indicator -->
+        <View
+            android:id="@+id/statusIndicator"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_gravity="bottom|end"
+            android:background="@drawable/ic_circle"
+            android:backgroundTint="#4CAF50"
+            android:layout_marginEnd="2dp"
+            android:layout_marginBottom="2dp"
+            android:visibility="gone" />
+
+    </FrameLayout>
+
+    <!-- Chat Info Container -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_gravity="center_vertical"
+        android:orientation="vertical">
+
+        <!-- User Name and Timestamp -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="4dp">
+
+            <TextView
+                android:id="@+id/tvUserName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Customer Support"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#333333"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+            <TextView
+                android:id="@+id/tvTimestamp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2:30 PM"
+                android:textSize="12sp"
+                android:textColor="#999999"
+                android:layout_marginStart="8dp" />
+
+        </LinearLayout>
+
+        <!-- Last Message and Badge -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tvLastMessage"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Thank you for your order! How can we help you today?"
+                android:textSize="14sp"
+                android:textColor="#666666"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:lineSpacingExtra="2dp" />
+
+            <!-- Unread Messages Badge -->
+            <TextView
+                android:id="@+id/tvUnreadBadge"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:text="3"
+                android:textSize="12sp"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:background="@drawable/ic_circle"
+                android:backgroundTint="#F44336"
+                android:layout_marginStart="8dp"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+        <!-- Chat Type Indicator (optional) -->
+        <LinearLayout
+            android:id="@+id/layoutChatType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="4dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/ivChatTypeIcon"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:src="@drawable/ic_help"
+                android:layout_marginEnd="4dp"
+                app:tint="#2196F3" />
+
+            <TextView
+                android:id="@+id/tvChatType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Support"
+                android:textSize="11sp"
+                android:textColor="#2196F3"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Message Status Icons -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_vertical"
+        android:layout_marginStart="8dp">
+
+        <!-- Delivered/Read Status -->
+        <ImageView
+            android:id="@+id/ivMessageStatus"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:src="@android:drawable/ic_menu_send"
+            android:layout_marginBottom="4dp"
+            android:visibility="gone"
+            app:tint="#4CAF50" />
+
+        <!-- Priority/Important Flag -->
+        <ImageView
+            android:id="@+id/ivPriorityFlag"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:src="@android:drawable/ic_menu_info_details"
+            android:visibility="gone"
+            app:tint="#FF9800" />
+
+    </LinearLayout>
+
+</LinearLayout> 

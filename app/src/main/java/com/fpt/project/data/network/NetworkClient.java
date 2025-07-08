@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.fpt.project.data.model.ConversationIdDeserializer;
+import com.fpt.project.data.model.ConversationInfo;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -42,6 +44,7 @@ public class NetworkClient {
         Gson gson = new GsonBuilder()
                 .setLenient()
                 .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .registerTypeAdapter(ConversationInfo.class, new ConversationIdDeserializer())
                 .create();
         
         // Create OkHttpClient with interceptors
@@ -70,32 +73,47 @@ public class NetworkClient {
         return retrofit.create(ApiService.class);
     }
     
-    // Auth Interceptor to add Authorization header
+    // Auth Interceptor to add Authorization header or x-session-id
     private class AuthInterceptor implements Interceptor {
         @Override
         public Response intercept(Chain chain) throws IOException {
             Request originalRequest = chain.request();
             String url = originalRequest.url().toString();
             
-            // Get token from SharedPreferences
+            // Get authentication data from SharedPreferences
             SharedPreferences prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE);
             String token = prefs.getString("auth_token", null);
+            boolean isLoggedIn = prefs.getBoolean("is_logged_in", false);
             
             Log.d(TAG, "Intercepting request to: " + url);
+            Log.d(TAG, "User logged in: " + isLoggedIn);
             Log.d(TAG, "Token found: " + (token != null ? "YES (length=" + token.length() + ")" : "NO"));
             
-            // Add authorization header if token exists
-            if (token != null && !token.isEmpty()) {
-                Request newRequest = originalRequest.newBuilder()
-                        .header("Authorization", "Bearer " + token)
-                        .build();
+            Request.Builder requestBuilder = originalRequest.newBuilder();
+            
+            // If user is logged in and has token, use Bearer token
+            if (isLoggedIn && token != null && !token.isEmpty()) {
+                requestBuilder.header("Authorization", "Bearer " + token);
                 Log.d(TAG, "Added Authorization header to request");
-                return chain.proceed(newRequest);
             } else {
-                Log.w(TAG, "No token available, proceeding without Authorization header");
+                // If user is not logged in, use session ID for anonymous access
+                String sessionId = getOrCreateSessionId(prefs);
+                requestBuilder.header("x-session-id", sessionId);
+                Log.d(TAG, "Added x-session-id header: " + sessionId);
             }
             
-            return chain.proceed(originalRequest);
+            return chain.proceed(requestBuilder.build());
+        }
+        
+        private String getOrCreateSessionId(SharedPreferences prefs) {
+            String sessionId = prefs.getString("session_id", null);
+            if (sessionId == null || sessionId.isEmpty()) {
+                // Generate new session ID
+                sessionId = "sess_" + System.currentTimeMillis() + "_" + Math.random();
+                prefs.edit().putString("session_id", sessionId).apply();
+                Log.d(TAG, "Generated new session ID: " + sessionId);
+            }
+            return sessionId;
         }
     }
     

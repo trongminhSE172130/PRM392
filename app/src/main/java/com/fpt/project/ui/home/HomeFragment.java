@@ -50,11 +50,10 @@ public class HomeFragment extends Fragment {
         android.widget.ImageView ivChat = view.findViewById(R.id.ivChat);
         if (ivChat != null) {
             ivChat.setOnClickListener(v -> {
-                // Navigate to chat fragment or activity
+                // Navigate to chat fragment via bottom navigation
                 if (getActivity() != null && getActivity() instanceof com.fpt.project.MainActivity) {
                     com.fpt.project.MainActivity mainActivity = (com.fpt.project.MainActivity) getActivity();
-                    // TODO: Navigate to chat - for now show toast
-                    android.widget.Toast.makeText(getContext(), "Chat feature coming soon!", android.widget.Toast.LENGTH_SHORT).show();
+                    mainActivity.navigateToChat();
                 }
             });
         }
@@ -111,9 +110,6 @@ public class HomeFragment extends Fragment {
                         android.widget.Toast.makeText(getContext(), 
                             "Failed to load products: " + message, 
                             android.widget.Toast.LENGTH_SHORT).show();
-                        
-                        // Load dummy data as fallback
-                        loadDummyProducts();
                     });
                 }
             }
@@ -124,36 +120,15 @@ public class HomeFragment extends Fragment {
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(() -> {
                         android.widget.Toast.makeText(getContext(), 
-                            "Cannot connect to server. Loading offline data...", 
+                            "Cannot connect to server", 
                             android.widget.Toast.LENGTH_LONG).show();
-                        
-                        // Load dummy data as fallback
-                        loadDummyProducts();
                     });
                 }
             }
         });
     }
 
-    private void loadDummyProducts() {
-        productList.clear();
-        
-        // Add some dummy products
-        for (int i = 1; i <= 10; i++) {
-            Product product = new Product();
-            product.setId("dummy_" + i);
-            product.setName("Product " + i);
-            product.setDescription("Description for product " + i);
-            product.setPrice(19.99 + (i * 5));
-            product.setStockQuantity(50 + i);
-            product.setSku("DUMMY-" + i);
-            product.setActive(true);
-            product.setFeatured(i % 3 == 0); // Every 3rd product is featured
-            productList.add(product);
-        }
-        
-        productAdapter.notifyDataSetChanged();
-    }
+
 
     private void onProductClick(Product product) {
         Log.d("HomeFragment", "Product clicked: " + product.getName());

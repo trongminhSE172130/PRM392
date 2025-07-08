@@ -12,6 +12,7 @@ import com.fpt.project.data.model.request.AddToCartRequest;
 import com.fpt.project.data.model.request.UpdateCartRequest;
 import com.fpt.project.data.model.request.CheckoutRequest;
 import com.fpt.project.data.model.request.PaymentRequest;
+import com.fpt.project.data.model.request.SendMessageRequest;
 import com.fpt.project.data.model.response.ApiResponse;
 import com.fpt.project.data.model.response.CartResponse;
 import com.fpt.project.data.model.response.LoginResponse;
@@ -20,6 +21,8 @@ import com.fpt.project.data.model.response.RegisterResponse;
 import com.fpt.project.data.model.response.CheckoutResponse;
 import com.fpt.project.data.model.response.PaymentResponse;
 import com.fpt.project.data.model.response.CategoryResponse;
+import com.fpt.project.data.model.response.MessagesResponse;
+import com.fpt.project.data.model.response.SendMessageResponse;
 
 import java.util.List;
 
@@ -174,17 +177,32 @@ public interface ApiService {
     
     // ======================== CHAT APIs ========================
     
-    @GET(ApiConfig.CHAT_MESSAGES)
-    Call<ApiResponse<List<ChatMessage>>> getChatMessages(
+    // Get user's conversations
+    @GET(ApiConfig.CONVERSATION_BY_USER)
+    Call<ApiResponse<List<Object>>> getMyConversations();
+ 
+    // Create new conversation with staff
+    @POST(ApiConfig.CONVERSATION)
+    Call<ApiResponse<Object>> createConversation(@Body Object conversationRequest);
+    
+    // Get conversation detail
+    @GET(ApiConfig.CONVERSATION_DETAIL)
+    Call<ApiResponse<Object>> getConversationDetail(@Path("id") String conversationId);
+    
+    // Get messages in conversation
+    @GET(ApiConfig.MESSAGE_IN_CONVERSATION)
+    Call<ApiResponse<MessagesResponse>> getChatMessages(
+            @Path("id") String conversationId,
             @Query("page") int page,
             @Query("limit") int limit
     );
     
-    @POST(ApiConfig.CHAT_MESSAGES)
-    Call<ApiResponse<ChatMessage>> sendMessage(@Body ChatMessage message);
-    
-    @PUT(ApiConfig.CHAT_MESSAGE_READ)
-    Call<ApiResponse<Object>> markMessageAsRead(@Path("id") int messageId);
+    // Send message in conversation
+    @POST(ApiConfig.SEND_MESSAGE)
+    Call<SendMessageResponse> sendMessage(
+            @Path("id") String conversationId, 
+            @Body SendMessageRequest request
+    );
     
     // ======================== STORE APIs ========================
     

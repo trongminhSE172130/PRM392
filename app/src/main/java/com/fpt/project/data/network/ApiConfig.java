@@ -6,9 +6,14 @@ public class ApiConfig {
     // For local development (Android Emulator)
     public static final String BASE_URL = "http://10.0.2.2:5000/api/";
     
+    // WebSocket URL (without /api/ suffix)
+    public static final String WEBSOCKET_URL = "http://10.0.2.2:5000";
+    
     // Alternative URLs for different environments
     // public static final String BASE_URL = "http://192.168.1.100:5000/api/"; // For real device on same network
+    // public static final String WEBSOCKET_URL = "http://192.168.1.100:5000"; // For real device on same network
     // public static final String BASE_URL = "https://your-api-domain.com/api/"; // For production
+    // public static final String WEBSOCKET_URL = "https://your-api-domain.com"; // For production
 
     // API Endpoints - Updated to match your actual API
     
@@ -54,9 +59,11 @@ public class ApiConfig {
     public static final String CANCEL_ORDER = "orders/{id}/cancel";
     public static final String GET_ORDERS = "orders/admin/all"; //admin
     // Chat APIs (you may need to implement these)
-    public static final String CHAT_MESSAGES = "chat/messages";
-    public static final String CHAT_MESSAGE_READ = "chat/messages/{id}/read";
-    
+    public static final String CONVERSATION = "chat/conversation";
+    public static final String CONVERSATION_DETAIL = "chat/conversation/{id}";
+    public static final String MESSAGE_IN_CONVERSATION = "chat/conversation/{id}/messages";
+    public static final String SEND_MESSAGE = "chat/conversation/{id}/message";
+    public static final String CONVERSATION_BY_USER = "chat/my-conversations";
     // Store APIs (you may need to implement these)
     public static final String STORE_INFO = "store/info";
     public static final String STORE_LOCATION = "store/location";

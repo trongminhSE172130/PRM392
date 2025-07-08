@@ -50,6 +50,12 @@
             android:name=".ui.category.CategoryProductsActivity"
             android:exported="false"
             android:parentActivityName=".MainActivity" />
+            
+        <!-- Chat Detail Activity -->
+        <activity
+            android:name=".ui.chat.ChatDetailActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
 
         <!-- Payment Result Activity - Handle VNPay return URL -->
         <activity

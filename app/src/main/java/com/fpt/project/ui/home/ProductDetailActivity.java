@@ -88,9 +88,14 @@ public class ProductDetailActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private void loadProductData() {
         // Try to get product from Intent extras first (passed directly)
-        product = (Product) getIntent().getSerializableExtra(EXTRA_PRODUCT);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            product = getIntent().getSerializableExtra(EXTRA_PRODUCT, Product.class);
+        } else {
+            product = (Product) getIntent().getSerializableExtra(EXTRA_PRODUCT);
+        }
         
         if (product != null) {
             displayProductInfo(product);
@@ -112,7 +117,6 @@ public class ProductDetailActivity extends AppCompatActivity {
         
         // Note: API endpoint expects int but our model uses String
         // For now, we'll show error. You may need to update API or handle conversion
-        Toast.makeText(this, "Loading product details...", Toast.LENGTH_SHORT).show();
         
         try {
             int id = Integer.parseInt(productId.replaceAll("[^0-9]", ""));
@@ -358,10 +362,15 @@ public class ProductDetailActivity extends AppCompatActivity {
         updateQuantityDisplay();
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                getOnBackPressedDispatcher().onBackPressed();
+            } else {
+                onBackPressed();
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);

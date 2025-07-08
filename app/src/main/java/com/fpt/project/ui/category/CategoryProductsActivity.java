@@ -72,9 +72,14 @@ public class CategoryProductsActivity extends AppCompatActivity {
         loadProducts();
     }
 
+    @SuppressWarnings("deprecation")
     private void getDataFromIntent() {
         if (getIntent() != null && getIntent().hasExtra(EXTRA_CATEGORY)) {
-            category = (Category) getIntent().getSerializableExtra(EXTRA_CATEGORY);
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                category = getIntent().getSerializableExtra(EXTRA_CATEGORY, Category.class);
+            } else {
+                category = (Category) getIntent().getSerializableExtra(EXTRA_CATEGORY);
+            }
         }
         
         if (category == null) {
@@ -294,10 +299,15 @@ public class CategoryProductsActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                getOnBackPressedDispatcher().onBackPressed();
+            } else {
+                onBackPressed();
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);
