@@ -4,4 +4,12 @@
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
     </style>
+    
+    <!-- Chat Detail Activity Theme with proper system bars handling for dark mode -->
+    <style name="Theme.App.ChatDetail" parent="Base.Theme.Project">
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:statusBarColor">#2C2C2C</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
 </resources>
