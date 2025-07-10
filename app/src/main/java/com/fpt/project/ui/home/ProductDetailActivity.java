@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,15 +28,19 @@ public class ProductDetailActivity extends AppCompatActivity {
     public static final String EXTRA_PRODUCT = "extra_product";
 
     // Views
-    private MaterialToolbar toolbar;
+    private ImageView btnBack;
     private ImageView ivProductImage;
     private TextView tvProductName;
     private TextView tvProductPrice;
-    private TextView tvProductCategory;
+    private TextView tvCategoryTag;
     private TextView tvProductSku;
     private TextView tvStockStatus;
+    private TextView tvStockCount;
     private TextView tvProductDescription;
     private TextView tvQuantity;
+    private TextView tvTotalPrice;
+    private TextView tvRating;
+    private LinearLayout layoutRating;
     private MaterialButton btnDecrease;
     private MaterialButton btnIncrease;
     private MaterialButton btnAddToCart;
@@ -54,9 +59,8 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         initRepositories();
         initViews();
-        setupToolbar();
-        loadProductData();
         setupClickListeners();
+        loadProductData();
     }
 
     private void initRepositories() {
@@ -65,28 +69,26 @@ public class ProductDetailActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        toolbar = findViewById(R.id.toolbar);
+        btnBack = findViewById(R.id.btnBack);
         ivProductImage = findViewById(R.id.ivProductImage);
         tvProductName = findViewById(R.id.tvProductName);
         tvProductPrice = findViewById(R.id.tvProductPrice);
-        tvProductCategory = findViewById(R.id.tvProductCategory);
+        tvCategoryTag = findViewById(R.id.tvCategoryTag);
         tvProductSku = findViewById(R.id.tvProductSku);
         tvStockStatus = findViewById(R.id.tvStockStatus);
+        tvStockCount = findViewById(R.id.tvStockCount);
         tvProductDescription = findViewById(R.id.tvProductDescription);
         tvQuantity = findViewById(R.id.tvQuantity);
+        tvTotalPrice = findViewById(R.id.tvTotalPrice);
+        tvRating = findViewById(R.id.tvRating);
+        layoutRating = findViewById(R.id.layoutRating);
         btnDecrease = findViewById(R.id.btnDecrease);
         btnIncrease = findViewById(R.id.btnIncrease);
         btnAddToCart = findViewById(R.id.btnAddToCart);
         stockIndicator = findViewById(R.id.stockIndicator);
     }
 
-    private void setupToolbar() {
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-        }
-    }
+
 
     @SuppressWarnings("deprecation")
     private void loadProductData() {
@@ -161,22 +163,19 @@ public class ProductDetailActivity extends AppCompatActivity {
     private void displayProductInfo(Product product) {
         Log.d(TAG, "Displaying product: " + product.getName());
 
-        // Product name and set toolbar title
+        // Product name
         tvProductName.setText(product.getName());
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(product.getName());
-        }
 
         // Price
         tvProductPrice.setText(String.format("$%.2f", product.getPrice()));
 
-        // Category
+        // Category tag
         String categoryName = product.getCategoryName();
         if (categoryName != null && !categoryName.isEmpty()) {
-            tvProductCategory.setText("Category: " + categoryName);
-            tvProductCategory.setVisibility(View.VISIBLE);
+            tvCategoryTag.setText(categoryName);
+            tvCategoryTag.setVisibility(View.VISIBLE);
         } else {
-            tvProductCategory.setVisibility(View.GONE);
+            tvCategoryTag.setVisibility(View.GONE);
         }
 
         // SKU
@@ -200,6 +199,9 @@ public class ProductDetailActivity extends AppCompatActivity {
         // Product image
         loadProductImage(product);
 
+        // Update quantity display and total price
+        updateQuantityDisplay();
+
         // Update add to cart button based on stock
         updateAddToCartButton();
     }
@@ -209,19 +211,23 @@ public class ProductDetailActivity extends AppCompatActivity {
         boolean isActive = product.isActive();
 
         if (!isActive) {
-            tvStockStatus.setText("Product not available");
+            tvStockStatus.setText("Not Available");
+            tvStockCount.setText("Product unavailable");
             stockIndicator.setBackgroundTintList(getColorStateList(android.R.color.holo_red_light));
             btnAddToCart.setEnabled(false);
         } else if (stock <= 0) {
             tvStockStatus.setText("Out of Stock");
+            tvStockCount.setText("0 available");
             stockIndicator.setBackgroundTintList(getColorStateList(android.R.color.holo_red_light));
             btnAddToCart.setEnabled(false);
         } else if (stock <= 10) {
-            tvStockStatus.setText("Low Stock (" + stock + " available)");
+            tvStockStatus.setText("Low Stock");
+            tvStockCount.setText(stock + " available");
             stockIndicator.setBackgroundTintList(getColorStateList(android.R.color.holo_orange_light));
             btnAddToCart.setEnabled(true);
         } else {
-            tvStockStatus.setText("In Stock (" + stock + " available)");
+            tvStockStatus.setText("In Stock");
+            tvStockCount.setText(stock + " available");
             stockIndicator.setBackgroundTintList(getColorStateList(android.R.color.holo_green_light));
             btnAddToCart.setEnabled(true);
         }
@@ -241,6 +247,15 @@ public class ProductDetailActivity extends AppCompatActivity {
     }
 
     private void setupClickListeners() {
+        // Back button
+        btnBack.setOnClickListener(v -> {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                getOnBackPressedDispatcher().onBackPressed();
+            } else {
+                onBackPressed();
+            }
+        });
+
         // Quantity controls
         btnDecrease.setOnClickListener(v -> {
             if (quantity > 1) {
@@ -264,7 +279,15 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     private void updateQuantityDisplay() {
         tvQuantity.setText(String.valueOf(quantity));
+        updateTotalPrice();
         updateAddToCartButton();
+    }
+
+    private void updateTotalPrice() {
+        if (product != null && tvTotalPrice != null) {
+            double totalPrice = product.getPrice() * quantity;
+            tvTotalPrice.setText(String.format("$%.2f", totalPrice));
+        }
     }
 
     private void updateAddToCartButton() {
@@ -277,10 +300,9 @@ public class ProductDetailActivity extends AppCompatActivity {
         btnAddToCart.setEnabled(canAddToCart);
         
         if (canAddToCart) {
-            double totalPrice = product.getPrice() * quantity;
-            btnAddToCart.setText(String.format("Add to Cart - $%.2f", totalPrice));
-        } else {
             btnAddToCart.setText("Add to Cart");
+        } else {
+            btnAddToCart.setText("Unavailable");
         }
     }
 

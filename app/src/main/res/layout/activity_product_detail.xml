@@ -5,66 +5,187 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:background="#FAFAFA"
     tools:context=".ui.home.ProductDetailActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayout"
+    <!-- Gradient Header with Back Button -->
+    <LinearLayout
+        android:id="@+id/headerLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/gradient_primary"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="24dp"
         android:fitsSystemWindows="true">
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
+        <!-- Top Bar with Back Button -->
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:navigationIcon="?attr/homeAsUpIndicator"
-            app:title="Product Details"
-            app:titleTextColor="@android:color/white" />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
 
-    </com.google.android.material.appbar.AppBarLayout>
+            <ImageView
+                android:id="@+id/btnBack"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_arrow_right"
+                android:rotation="180"
+                android:padding="6dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
+                app:tint="@color/white" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/product_details"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:gravity="center" />
+
+            <ImageView
+                android:id="@+id/btnWishlist"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_help"
+                android:padding="6dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
+                app:tint="@color/white"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_marginTop="120dp"
+        android:layout_marginBottom="100dp"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:orientation="vertical">
 
-            <!-- Product Image -->
+            <!-- Product Image Section -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp">
+                android:layout_height="350dp"
+                android:layout_margin="16dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="12dp"
+                app:strokeWidth="0dp"
+                app:cardBackgroundColor="@color/white">
 
-                <ImageView
-                    android:id="@+id/ivProductImage"
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:src="@android:drawable/ic_menu_gallery"
-                    tools:src="@android:drawable/ic_menu_gallery" />
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/ivProductImage"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:src="@android:drawable/ic_menu_gallery"
+                        tools:src="@android:drawable/ic_menu_gallery" />
+
+                    <!-- Sale Badge (if on sale) -->
+                    <TextView
+                        android:id="@+id/tvSaleBadge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top|end"
+                        android:layout_margin="16dp"
+                        android:background="@drawable/badge_background"
+                        android:backgroundTint="#F44336"
+                        android:padding="8dp"
+                        android:text="SALE"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
+
+                    <!-- Stock Badge -->
+                    <LinearLayout
+                        android:id="@+id/layoutStockBadge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|start"
+                        android:layout_margin="16dp"
+                        android:background="@drawable/badge_background"
+                        android:backgroundTint="#4CAF50"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="8dp">
+
+                        <View
+                            android:id="@+id/stockIndicator"
+                            android:layout_width="8dp"
+                            android:layout_height="8dp"
+                            android:layout_marginEnd="6dp"
+                            android:background="@drawable/ic_circle"
+                            android:backgroundTint="@color/white" />
+
+                        <TextView
+                            android:id="@+id/tvStockBadge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/in_stock"
+                            android:textColor="@color/white"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                </FrameLayout>
 
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Product Info Card -->
+            <!-- Product Info Section -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp">
+                app:cardCornerRadius="20dp"
+                app:cardElevation="8dp"
+                app:strokeWidth="0dp"
+                app:cardBackgroundColor="@color/white">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="20dp">
+
+                    <!-- Category Tag -->
+                    <TextView
+                        android:id="@+id/tvCategoryTag"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/category_tag_background"
+                        android:text="@string/category"
+                        android:textColor="#2196F3"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:padding="6dp"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:layout_marginBottom="12dp"
+                        tools:text="Vitamins" />
 
                     <!-- Product Name -->
                     <TextView
@@ -72,65 +193,191 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
-                        android:textColor="@android:color/black"
-                        android:textSize="24sp"
+                        android:textColor="#2C2C2C"
+                        android:textSize="28sp"
                         android:textStyle="bold"
-                        tools:text="Vitamin C 1000mg" />
+                        android:lineSpacingExtra="4dp"
+                        tools:text="Vitamin C 1000mg with Rose Hips" />
 
-                    <!-- Price -->
-                    <TextView
-                        android:id="@+id/tvProductPrice"
+                    <!-- Rating Section -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="16dp">
+
+                        <LinearLayout
+                            android:id="@+id/layoutRating"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+                            <!-- Stars will be added programmatically -->
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tvRating"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="4.5"
+                            android:textSize="14sp"
+                            android:textColor="#757575"
+                            android:layout_marginStart="8dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="(128 reviews)"
+                            android:textSize="14sp"
+                            android:textColor="#BDBDBD"
+                            android:layout_marginStart="4dp" />
+
+                    </LinearLayout>
+
+                    <!-- Price Section -->
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:textColor="?attr/colorPrimary"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        tools:text="$25.99" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="16dp">
 
-                    <!-- Category -->
-                    <TextView
-                        android:id="@+id/tvProductCategory"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:textColor="@android:color/darker_gray"
-                        android:textSize="14sp"
-                        tools:text="Category: Vitamin &amp; Supplements" />
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvProductPrice"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="#4CAF50"
+                                android:textSize="32sp"
+                                android:textStyle="bold"
+                                tools:text="$25.99" />
+
+                            <TextView
+                                android:id="@+id/tvOriginalPrice"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="$29.99"
+                                android:textSize="18sp"
+                                android:textColor="#BDBDBD"
+                                android:visibility="gone"
+                                android:layout_marginTop="4dp" />
+
+                        </LinearLayout>
+
+                        <!-- Stock Status -->
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="end">
+
+                            <TextView
+                                android:id="@+id/tvStockStatus"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="#4CAF50"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                tools:text="In Stock" />
+
+                            <TextView
+                                android:id="@+id/tvStockCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="94 available"
+                                android:textSize="14sp"
+                                android:textColor="#757575"
+                                android:layout_marginTop="2dp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
 
                     <!-- SKU -->
                     <TextView
                         android:id="@+id/tvProductSku"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:textColor="@android:color/darker_gray"
+                        android:textColor="#BDBDBD"
                         android:textSize="14sp"
+                        android:layout_marginBottom="12dp"
                         tools:text="SKU: VIT-C-1000" />
 
-                    <!-- Stock Status -->
+                    <!-- Quantity Selector -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:gravity="center_vertical">
-
-                        <View
-                            android:id="@+id/stockIndicator"
-                            android:layout_width="12dp"
-                            android:layout_height="12dp"
-                            android:layout_marginEnd="8dp"
-                            android:background="@drawable/ic_circle"
-                            android:backgroundTint="@android:color/holo_green_light" />
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="8dp">
 
                         <TextView
-                            android:id="@+id/tvStockStatus"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:textColor="@android:color/darker_gray"
-                            android:textSize="14sp"
-                            tools:text="In Stock (94 available)" />
+                            android:text="@string/quantity"
+                            android:textColor="#2C2C2C"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:background="@drawable/quantity_background"
+                            android:padding="4dp">
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnDecrease"
+                                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:insetTop="0dp"
+                                android:insetBottom="0dp"
+                                app:icon="@drawable/ic_remove"
+                                app:iconSize="18dp"
+                                app:iconGravity="textStart"
+                                app:iconPadding="0dp"
+                                app:cornerRadius="8dp"
+                                app:strokeColor="#E0E0E0"
+                                app:strokeWidth="1dp"
+                                app:backgroundTint="@color/white" />
+
+                            <TextView
+                                android:id="@+id/tvQuantity"
+                                android:layout_width="60dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginEnd="8dp"
+                                android:gravity="center"
+                                android:text="1"
+                                android:textColor="#2C2C2C"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnIncrease"
+                                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:insetTop="0dp"
+                                android:insetBottom="0dp"
+                                app:icon="@drawable/ic_add"
+                                app:iconSize="18dp"
+                                app:iconGravity="textStart"
+                                app:iconPadding="0dp"
+                                app:cornerRadius="8dp"
+                                app:strokeColor="#E0E0E0"
+                                app:strokeWidth="1dp"
+                                app:backgroundTint="@color/white" />
+
+                        </LinearLayout>
 
                     </LinearLayout>
 
@@ -138,119 +385,41 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Description Card -->
+            <!-- Description Section -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp">
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="32dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="8dp"
+                app:strokeWidth="0dp"
+                app:cardBackgroundColor="@color/white">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="20dp">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:text="Description"
-                        android:textColor="@android:color/black"
-                        android:textSize="18sp"
+                        android:layout_marginBottom="12dp"
+                        android:text="@string/description"
+                        android:textColor="#2C2C2C"
+                        android:textSize="20sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/tvProductDescription"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:lineSpacingExtra="4dp"
-                        android:textColor="@android:color/darker_gray"
+                        android:lineSpacingExtra="6dp"
+                        android:textColor="#757575"
                         android:textSize="16sp"
-                        tools:text="High quality Vitamin C supplement for immune system support. Made with premium ingredients." />
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Quantity Selector -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="80dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="16dp"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Quantity:"
-                        android:textColor="@android:color/black"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnDecrease"
-                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:layout_marginEnd="8dp"
-                            android:insetTop="0dp"
-                            android:insetBottom="0dp"
-                            app:icon="@drawable/ic_remove"
-                            app:iconSize="20dp"
-                            app:iconGravity="textStart"
-                            app:iconPadding="0dp"
-                            app:cornerRadius="8dp"
-                            app:strokeColor="?attr/colorPrimary"
-                            app:strokeWidth="1dp" />
-
-                        <TextView
-                            android:id="@+id/tvQuantity"
-                            android:layout_width="60dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:gravity="center"
-                            android:text="1"
-                            android:textColor="@android:color/black"
-                            android:textSize="18sp"
-                            android:textStyle="bold"
-                            android:background="@drawable/quantity_background"
-                            android:padding="8dp" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnIncrease"
-                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:layout_marginStart="8dp"
-                            android:insetTop="0dp"
-                            android:insetBottom="0dp"
-                            app:icon="@drawable/ic_add"
-                            app:iconSize="20dp"
-                            app:iconGravity="textStart"
-                            app:iconPadding="0dp"
-                            app:cornerRadius="8dp"
-                            app:strokeColor="?attr/colorPrimary"
-                            app:strokeWidth="1dp" />
-
-                    </LinearLayout>
+                        tools:text="High quality Vitamin C supplement for immune system support. Made with premium ingredients and enhanced with natural rose hips for better absorption." />
 
                 </LinearLayout>
 
@@ -260,25 +429,60 @@
 
     </androidx.core.widget.NestedScrollView>
 
-    <!-- Bottom Add to Cart Button -->
-    <com.google.android.material.card.MaterialCardView
+    <!-- Bottom Action Bar -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_margin="16dp"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="8dp">
+        android:orientation="horizontal"
+        android:background="@color/white"
+        android:padding="16dp"
+        android:gravity="center_vertical"
+        android:elevation="16dp">
 
+        <!-- Total Price -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginEnd="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/total_price"
+                android:textColor="#757575"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tvTotalPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="$25.99"
+                android:textColor="#4CAF50"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginTop="2dp" />
+
+        </LinearLayout>
+
+        <!-- Add to Cart Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnAddToCart"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="56dp"
-            android:text="Add to Cart"
+            android:layout_weight="2"
+            android:text="@string/add_to_cart"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:cornerRadius="12dp"
-            app:icon="@drawable/ic_shopping_cart" />
+            android:textColor="@color/white"
+            app:cornerRadius="16dp"
+            app:backgroundTint="#2196F3"
+            app:icon="@drawable/ic_shopping_cart"
+            app:iconTint="@color/white"
+            app:iconGravity="textStart" />
 
-    </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout> 
