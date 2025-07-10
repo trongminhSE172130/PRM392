@@ -299,15 +299,10 @@ public class CategoryProductsActivity extends AppCompatActivity {
         });
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-                getOnBackPressedDispatcher().onBackPressed();
-            } else {
-                onBackPressed();
-            }
+            finish();
             return true;
         }
         return super.onOptionsItemSelected(item);

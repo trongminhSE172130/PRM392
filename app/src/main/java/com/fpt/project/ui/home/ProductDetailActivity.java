@@ -248,13 +248,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     private void setupClickListeners() {
         // Back button
-        btnBack.setOnClickListener(v -> {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-                getOnBackPressedDispatcher().onBackPressed();
-            } else {
-                onBackPressed();
-            }
-        });
+        btnBack.setOnClickListener(v -> finish());
 
         // Quantity controls
         btnDecrease.setOnClickListener(v -> {
@@ -384,15 +378,10 @@ public class ProductDetailActivity extends AppCompatActivity {
         updateQuantityDisplay();
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-                getOnBackPressedDispatcher().onBackPressed();
-            } else {
-                onBackPressed();
-            }
+            finish();
             return true;
         }
         return super.onOptionsItemSelected(item);

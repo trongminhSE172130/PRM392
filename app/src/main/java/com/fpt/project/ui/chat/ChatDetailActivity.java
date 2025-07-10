@@ -90,19 +90,18 @@ public class ChatDetailActivity extends AppCompatActivity implements
         setupRecyclerView();
         setupMessageInput();
         setupWebSocket();
+        setupBackPressedCallback();
         loadMessages();
     }
 
     private void setupSystemBars() {
         // Ensure content doesn't get hidden behind system bars (notch, status bar, navigation bar)
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
-            // For Android 11+ (API 30+) - use WindowInsetsController
-            getWindow().setDecorFitsSystemWindows(true);
+            // For Android 11+ (API 30+) - use WindowCompat
+            androidx.core.view.WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
         } else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            // For Android 5.0+ (API 21+) - use system UI flags
-            getWindow().getDecorView().setSystemUiVisibility(
-                android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-            );
+            // For Android 5.0+ (API 21+) - use WindowCompat for compatibility
+            androidx.core.view.WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
         }
     }
 
@@ -242,6 +241,15 @@ public class ChatDetailActivity extends AppCompatActivity implements
             Log.d(TAG, "Joining conversation: " + conversation.getId());
             socketManager.joinConversation(conversation.getId());
         }
+    }
+
+    private void setupBackPressedCallback() {
+        getOnBackPressedDispatcher().addCallback(this, new androidx.activity.OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                handleBackAction();
+            }
+        });
     }
 
     private void loadMessages() {
@@ -497,7 +505,7 @@ public class ChatDetailActivity extends AppCompatActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
+            handleBackAction();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -530,20 +538,14 @@ public class ChatDetailActivity extends AppCompatActivity implements
         // Don't leave conversation on pause, only on back/destroy
     }
 
-    @SuppressWarnings("deprecation")
-    @Override
-    public void onBackPressed() {
-        Log.d(TAG, "ChatDetailActivity onBackPressed");
+    private void handleBackAction() {
+        Log.d(TAG, "ChatDetailActivity handleBackAction");
         // Leave conversation room when going back
         if (socketManager != null && conversation != null && conversation.getId() != null) {
             Log.d(TAG, "Leaving conversation on back pressed: " + conversation.getId());
             socketManager.leaveConversation(conversation.getId());
         }
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            getOnBackPressedDispatcher().onBackPressed();
-        } else {
-            super.onBackPressed();
-        }
+        finish();
     }
 
     @Override
