@@ -1,5 +1,7 @@
 package com.fpt.project.ui.category;
 
+import android.content.res.ColorStateList;
+import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,19 +53,15 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     }
 
     class CategoryViewHolder extends RecyclerView.ViewHolder {
-        private ImageView ivCategoryImage;
+        private ImageView ivCategoryIcon;
         private TextView tvCategoryName;
         private TextView tvCategoryDescription;
-        private TextView tvProductCount;
-        private TextView tvCategoryBadge;
 
         public CategoryViewHolder(@NonNull View itemView) {
             super(itemView);
-            ivCategoryImage = itemView.findViewById(R.id.ivCategoryImage);
+            ivCategoryIcon = itemView.findViewById(R.id.ivCategoryIcon);
             tvCategoryName = itemView.findViewById(R.id.tvCategoryName);
             tvCategoryDescription = itemView.findViewById(R.id.tvCategoryDescription);
-            tvProductCount = itemView.findViewById(R.id.tvProductCount);
-            tvCategoryBadge = itemView.findViewById(R.id.tvCategoryBadge);
 
             itemView.setOnClickListener(v -> {
                 if (listener != null && getAdapterPosition() != RecyclerView.NO_POSITION) {
@@ -75,20 +73,9 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         public void bind(Category category) {
             tvCategoryName.setText(category.getName());
             
-            // Set description
-            if (category.getDescription() != null && !category.getDescription().isEmpty()) {
-                tvCategoryDescription.setText(category.getDescription());
-                tvCategoryDescription.setVisibility(View.VISIBLE);
-            } else {
-                // Set default descriptions for better UX
-                String defaultDescription = getDefaultDescription(category.getName());
-                if (defaultDescription != null) {
-                    tvCategoryDescription.setText(defaultDescription);
-                    tvCategoryDescription.setVisibility(View.VISIBLE);
-                } else {
-                    tvCategoryDescription.setVisibility(View.GONE);
-                }
-            }
+            // Set category description
+            String description = getCategoryDescription(category.getName());
+            tvCategoryDescription.setText(description);
 
             // Load image from URL if available
             if (category.getImageUrl() != null && !category.getImageUrl().isEmpty()) {
@@ -97,42 +84,65 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
                     .placeholder(getCategoryIcon(category.getName()))
                     .error(getCategoryIcon(category.getName()))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .centerCrop()
-                    .into(ivCategoryImage);
+                    .into(ivCategoryIcon);
                 
-                // Clear any color filter when loading actual image
-                ivCategoryImage.setColorFilter(null);
+                // Set white icon color for contrast with gradient
+                ivCategoryIcon.setColorFilter(ContextCompat.getColor(itemView.getContext(), R.color.white));
             } else {
                 // Use specific icons based on category name
                 int iconRes = getCategoryIcon(category.getName());
-                int iconColor = getCategoryColor(category.getName());
                 
-                ivCategoryImage.setImageResource(iconRes);
-                
-                // Set the icon color directly instead of using color filter
-                ivCategoryImage.setColorFilter(iconColor);
-                
-                // Find and set background color for the parent FrameLayout container
-                if (ivCategoryImage.getParent() instanceof View) {
-                    View iconFrame = (View) ivCategoryImage.getParent();
-                    if (iconFrame.getParent() instanceof View) {
-                        View iconContainer = (View) iconFrame.getParent();
-                        // Set a lighter version of the color as background
-                        int backgroundAlpha = 0x20; // 12.5% opacity
-                        int backgroundColor = (iconColor & 0x00FFFFFF) | (backgroundAlpha << 24);
-                        iconContainer.setBackgroundColor(backgroundColor);
+                ivCategoryIcon.setImageResource(iconRes);
+                ivCategoryIcon.setColorFilter(ContextCompat.getColor(itemView.getContext(), R.color.white));
+            }
+            
+            // Set gradient background based on category
+            setGradientBackground(category.getName());
+        }
+
+        private void setGradientBackground(String categoryName) {
+            int[] colors = getCategoryColors(categoryName);
+            
+            GradientDrawable gradient = new GradientDrawable();
+            gradient.setShape(GradientDrawable.OVAL);
+            gradient.setColors(colors);
+            gradient.setGradientType(GradientDrawable.LINEAR_GRADIENT);
+            gradient.setOrientation(GradientDrawable.Orientation.TL_BR);
+            
+            // Apply gradient to the icon container background
+            View iconContainer = (View) ivCategoryIcon.getParent();
+            if (iconContainer instanceof ViewGroup) {
+                ViewGroup containerGroup = (ViewGroup) iconContainer;
+                if (containerGroup.getChildCount() > 0) {
+                    View gradientView = containerGroup.getChildAt(0);
+                    if (gradientView != null) {
+                        gradientView.setBackground(gradient);
                     }
                 }
+                // Fallback: set on the container itself
+                if (containerGroup.getChildCount() == 0) {
+                    iconContainer.setBackground(gradient);
+                }
             }
+        }
 
-            // Show/hide product count (optional - can be enabled later)
-            if (tvProductCount != null) {
-                tvProductCount.setVisibility(View.GONE);
-            }
-
-            // Show/hide featured badge (optional)
-            if (tvCategoryBadge != null) {
-                tvCategoryBadge.setVisibility(View.GONE);
+        private String getCategoryDescription(String categoryName) {
+            if (categoryName == null) return "Tap to explore";
+            
+            String name = categoryName.toLowerCase();
+            
+            if (name.contains("vitamin") || name.contains("multivitamin")) {
+                return "Essential vitamins";
+            } else if (name.contains("herbal") || name.contains("supplement")) {
+                return "Natural supplements";
+            } else if (name.contains("omega") || name.contains("fish")) {
+                return "Omega fatty acids";
+            } else if (name.contains("workout") || name.contains("pre-workout") || name.contains("booster")) {
+                return "Workout boosters";
+            } else if (name.contains("protein") || name.contains("powder")) {
+                return "Protein powders";
+            } else {
+                return "Tap to explore";
             }
         }
 
@@ -156,58 +166,36 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
             }
         }
 
-        private int getCategoryColor(String categoryName) {
-            if (categoryName == null) return 0xFF2196F3;
+        private int[] getCategoryColors(String categoryName) {
+            if (categoryName == null) return new int[]{0xFF2196F3, 0xFF64B5F6};
             
             String name = categoryName.toLowerCase();
             
             if (name.contains("vitamin") || name.contains("multivitamin")) {
-                return 0xFF2196F3; // Blue
+                return new int[]{0xFF2196F3, 0xFF64B5F6}; // Blue gradient
             } else if (name.contains("herbal") || name.contains("supplement")) {
-                return 0xFF4CAF50; // Green
+                return new int[]{0xFF4CAF50, 0xFF81C784}; // Green gradient
             } else if (name.contains("omega") || name.contains("fish")) {
-                return 0xFFFF9800; // Orange
+                return new int[]{0xFFFF9800, 0xFFFFB74D}; // Orange gradient
             } else if (name.contains("workout") || name.contains("pre-workout") || name.contains("booster")) {
-                return 0xFFF44336; // Red
+                return new int[]{0xFFF44336, 0xFFE57373}; // Red gradient
             } else if (name.contains("protein") || name.contains("powder")) {
-                return 0xFF9C27B0; // Purple
+                return new int[]{0xFF9C27B0, 0xFFBA68C8}; // Purple gradient
             } else {
-                // Fallback to color based on hash for consistency
-                int[] colors = {
-                    0xFF2196F3, // Blue
-                    0xFF4CAF50, // Green  
-                    0xFFFF9800, // Orange
-                    0xFFE91E63, // Pink
-                    0xFF9C27B0, // Purple
-                    0xFF00BCD4, // Cyan
-                    0xFFFF5722, // Deep Orange
-                    0xFF795548  // Brown
+                // Fallback gradients based on hash for consistency
+                int[][] gradients = {
+                    {0xFF2196F3, 0xFF64B5F6}, // Blue
+                    {0xFF4CAF50, 0xFF81C784}, // Green  
+                    {0xFFFF9800, 0xFFFFB74D}, // Orange
+                    {0xFFE91E63, 0xFFF06292}, // Pink
+                    {0xFF9C27B0, 0xFFBA68C8}, // Purple
+                    {0xFF00BCD4, 0xFF4DD0E1}, // Cyan
+                    {0xFFFF5722, 0xFFFF8A65}, // Deep Orange
+                    {0xFF795548, 0xFFA1887F}  // Brown
                 };
                 
-                int colorIndex = Math.abs(categoryName.hashCode()) % colors.length;
-                return colors[colorIndex];
-            }
-        }
-
-        private String getDefaultDescription(String categoryName) {
-            if (categoryName == null) return null;
-            
-            String name = categoryName.toLowerCase();
-            
-            if (name.contains("vitamin") || name.contains("multivitamin")) {
-                return "Daily essential vitamins for overall health";
-            } else if (name.contains("herbal")) {
-                return "Natural remedies and herbal wellness solutions";
-            } else if (name.contains("omega") || name.contains("fish")) {
-                return "Heart and brain support from omega-rich oils";
-            } else if (name.contains("workout") || name.contains("pre-workout")) {
-                return "Energy-boosting supplements for workouts";
-            } else if (name.contains("protein")) {
-                return "Whey, plant-based, and casein protein supplements";
-            } else if (name.contains("supplement")) {
-                return "Vitamins and dietary supplements";
-            } else {
-                return null;
+                int colorIndex = Math.abs(categoryName.hashCode()) % gradients.length;
+                return gradients[colorIndex];
             }
         }
     }

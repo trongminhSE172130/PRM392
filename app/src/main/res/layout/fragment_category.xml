@@ -22,7 +22,7 @@
             android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Categories"
+            android:text="@string/categories"
             android:textColor="#333333"
             android:textSize="24sp"
             android:textStyle="bold"
@@ -32,7 +32,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Search categories..."
+            android:hint="@string/search_categories"
             app:startIconDrawable="@drawable/ic_search"
             app:startIconTint="#666666"
             app:hintTextColor="#999999"

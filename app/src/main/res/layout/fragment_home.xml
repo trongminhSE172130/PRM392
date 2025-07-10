@@ -1,82 +1,331 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipeRefreshLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/white">
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <!-- Header -->
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:background="#2196F3">
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:background="#F8F9FA">
 
-        <TextView
-            android:id="@+id/tvWelcome"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Welcome to E-Commerce"
-            android:textColor="@color/white"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginStart="8dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
-
-        <ImageView
-            android:id="@+id/ivChat"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_chat"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:tint="@color/white"
-            android:clickable="true"
-            android:focusable="true" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!-- Search Bar -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:hint="Search products..."
-        app:startIconDrawable="@drawable/ic_search"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etSearch"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text" />
+            android:orientation="vertical">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <!-- Header Section with Gradient -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/gradient_header_background"
+                android:paddingTop="16dp"
+                android:paddingBottom="24dp"
+                android:paddingHorizontal="20dp">
 
-    <!-- Products Title -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Featured Products"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="16dp" />
+                <!-- Welcome Text -->
+                <TextView
+                    android:id="@+id/tvWelcome"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/good_morning"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:alpha="0.9"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/ivNotification" />
 
-    <!-- Products RecyclerView -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewProducts"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:paddingHorizontal="8dp"
-        android:clipToPadding="false" />
+                <TextView
+                    android:id="@+id/tvUserName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/welcome_back"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="4dp"
+                    app:layout_constraintTop_toBottomOf="@+id/tvWelcome"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/ivNotification" />
 
-</LinearLayout>
+                <!-- Notification & Chat Icons -->
+                <ImageView
+                    android:id="@+id/ivNotification"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_settings"
+                    android:layout_marginEnd="16dp"
+                    app:layout_constraintTop_toTopOf="@+id/tvWelcome"
+                    app:layout_constraintEnd_toStartOf="@+id/ivChat"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvWelcome"
+                    app:tint="@color/white"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    android:padding="4dp" />
+
+                <ImageView
+                    android:id="@+id/ivChat"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_chat"
+                    app:layout_constraintTop_toTopOf="@+id/tvWelcome"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvWelcome"
+                    app:tint="@color/white"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    android:padding="4dp" />
+
+                <!-- Enhanced Search Bar -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    app:cardCornerRadius="25dp"
+                    app:cardElevation="4dp"
+                    app:layout_constraintTop_toBottomOf="@+id/tvUserName"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingHorizontal="20dp"
+                        android:background="@color/white">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_search"
+                            app:tint="#9E9E9E" />
+
+                        <EditText
+                            android:id="@+id/etSearch"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="12dp"
+                            android:hint="@string/search_hint"
+                            android:textColorHint="#9E9E9E"
+                            android:textSize="16sp"
+                            android:background="@null"
+                            android:inputType="text"
+                            android:maxLines="1" />
+
+                        <ImageView
+                            android:id="@+id/ivFilter"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_search"
+                            android:layout_marginStart="8dp"
+                            app:tint="#9E9E9E"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:background="?android:attr/selectableItemBackgroundBorderless"
+                            android:padding="4dp" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Banner Section -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="20dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="8dp">
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/viewPagerBanner"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <!-- Banner Indicators -->
+                <LinearLayout
+                    android:id="@+id/layoutIndicators"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:layout_marginBottom="16dp"
+                    android:orientation="horizontal" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Categories Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="24dp"
+                android:paddingHorizontal="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/categories"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="#2C2C2C" />
+
+                    <TextView
+                        android:id="@+id/tvSeeAllCategories"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/see_all"
+                        android:textSize="14sp"
+                        android:textColor="#2196F3"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:padding="8dp" />
+
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewCategories"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:clipToPadding="false"
+                    android:paddingStart="0dp"
+                    android:paddingEnd="8dp" />
+
+            </LinearLayout>
+
+            <!-- Featured Products Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="32dp"
+                android:paddingHorizontal="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_omega"
+                        app:tint="#FF9800"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/featured_products"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="#2C2C2C" />
+
+                    <TextView
+                        android:id="@+id/tvSeeAllFeatured"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/see_all"
+                        android:textSize="14sp"
+                        android:textColor="#2196F3"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:padding="8dp" />
+
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewProducts"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:clipToPadding="false"
+                    android:nestedScrollingEnabled="false" />
+
+            </LinearLayout>
+
+            <!-- Popular Products Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="32dp"
+                android:paddingHorizontal="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_omega"
+                        app:tint="#4CAF50"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/popular_products"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="#2C2C2C" />
+
+                    <TextView
+                        android:id="@+id/tvSeeAllPopular"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/see_all"
+                        android:textSize="14sp"
+                        android:textColor="#2196F3"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:padding="8dp" />
+
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewPopularProducts"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:clipToPadding="false"
+                    android:nestedScrollingEnabled="false" />
+
+            </LinearLayout>
+
+            <!-- Bottom Spacing -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="100dp" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

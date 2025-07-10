@@ -3,10 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="6dp"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="3dp"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="8dp"
     app:strokeWidth="0dp"
+    app:cardBackgroundColor="@color/white"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground">
@@ -15,119 +16,71 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@android:color/white">
+        android:padding="20dp"
+        android:gravity="center"
+        android:minHeight="140dp">
 
-        <!-- Category Image Container with Gradient Background -->
+        <!-- Category Icon Container with Gradient Background -->
         <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:background="#F8F9FA">
+            android:layout_width="72dp"
+            android:layout_height="72dp">
 
-            <!-- Gradient Background -->
-            <View
+            <!-- Gradient Background Circle -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/ic_circle"
-                android:backgroundTint="#E3F2FD"
-                android:alpha="0.8" />
+                app:cardCornerRadius="36dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp"
+                app:cardBackgroundColor="#E3F2FD">
 
-            <!-- Category Icon/Image Container -->
-            <FrameLayout
-                android:layout_width="72dp"
-                android:layout_height="72dp"
-                android:layout_gravity="center">
-
-                <!-- Icon Background Circle -->
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/ic_circle"
-                    android:backgroundTint="#2196F3"
-                    android:alpha="0.1" />
+                    android:background="@drawable/gradient_primary_light" />
 
-                <!-- Category Icon -->
-                <ImageView
-                    android:id="@+id/ivCategoryImage"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_category"
-                    android:scaleType="centerInside"
-                    app:tint="#2196F3" />
+            </com.google.android.material.card.MaterialCardView>
 
-            </FrameLayout>
-
-            <!-- Category Badge (for featured/popular) -->
-            <TextView
-                android:id="@+id/tvCategoryBadge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="top|end"
-                android:layout_margin="8dp"
-                android:background="@drawable/ic_circle"
-                android:text="★"
-                android:textColor="@color/white"
-                android:textSize="10sp"
-                android:textStyle="bold"
-                android:padding="6dp"
-                android:backgroundTint="#FF9800"
-                android:visibility="gone" />
+            <!-- Category Icon -->
+            <ImageView
+                android:id="@+id/ivCategoryIcon"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_category"
+                app:tint="@color/white"
+                android:scaleType="centerInside" />
 
         </FrameLayout>
 
-        <!-- Category Info Container -->
-        <LinearLayout
+        <!-- Category Name -->
+        <TextView
+            android:id="@+id/tvCategoryName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp"
-            android:gravity="center">
+            android:text="@string/category"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#2C2C2C"
+            android:gravity="center"
+            android:layout_marginTop="16dp"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:lineSpacingExtra="2dp" />
 
-            <!-- Category Name -->
-            <TextView
-                android:id="@+id/tvCategoryName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Category Name"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="#333333"
-                android:gravity="center"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:layout_marginBottom="4dp" />
-
-            <!-- Category Description -->
-            <TextView
-                android:id="@+id/tvCategoryDescription"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Category description"
-                android:textSize="13sp"
-                android:textColor="#666666"
-                android:gravity="center"
-                android:maxLines="2"
-                android:ellipsize="end"
-                android:lineSpacingExtra="1dp"
-                android:visibility="visible" />
-
-            <!-- Product Count (optional) -->
-            <TextView
-                android:id="@+id/tvProductCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:text="12 products"
-                android:textSize="11sp"
-                android:textColor="#999999"
-                android:background="#F0F0F0"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:paddingTop="2dp"
-                android:paddingBottom="2dp"
-                android:visibility="gone" />
-
-        </LinearLayout>
+        <!-- Category Description (optional) -->
+        <TextView
+            android:id="@+id/tvCategoryDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tap to explore"
+            android:textSize="12sp"
+            android:textColor="#757575"
+            android:gravity="center"
+            android:layout_marginTop="4dp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:visibility="visible" />
 
     </LinearLayout>
 

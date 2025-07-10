@@ -1,3 +1,76 @@
 <resources>
     <string name="app_name">project</string>
+    
+    <!-- Home Fragment -->
+    <string name="good_morning">Good Morning</string>
+    <string name="good_afternoon">Good Afternoon</string>
+    <string name="good_evening">Good Evening</string>
+    <string name="welcome_back">Welcome Back!</string>
+    <string name="search_hint">Search products, brands...</string>
+    <string name="categories">Categories</string>
+    <string name="featured_products">Featured Products</string>
+    <string name="popular_products">Popular Products</string>
+    <string name="see_all">See All</string>
+    
+    <!-- Product Card -->
+    <string name="add_to_cart">Add to Cart</string>
+    <string name="search_categories">Search categories...</string>
+    <string name="in_stock">In Stock</string>
+    <string name="out_of_stock">Out of Stock</string>
+    <string name="featured">Featured</string>
+    <string name="product_name">Product Name</string>
+    <string name="product_description">Product description...</string>
+    
+    <!-- Cart -->
+    <string name="cart">Cart</string>
+    <string name="checkout">Checkout</string>
+    <string name="total">Total</string>
+    <string name="continue_shopping">Continue Shopping</string>
+    <string name="empty_cart">Your cart is empty</string>
+    
+    <!-- Authentication -->
+    <string name="login">LOGIN</string>
+    <string name="register">REGISTER</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="full_name">Full Name</string>
+    <string name="phone">Phone</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="forgot_password">Forgot Password?</string>
+    
+    <!-- Navigation -->
+    <string name="home">Home</string>
+    <string name="category">Category</string>
+    <string name="map">Map</string>
+    <string name="profile">Profile</string>
+    <string name="chat">Chat</string>
+    
+    <!-- Messages -->
+    <string name="loading">Loading...</string>
+    <string name="error_network">Network error. Please check your connection.</string>
+    <string name="error_server">Server error. Please try again later.</string>
+    <string name="success">Success</string>
+    <string name="retry">Retry</string>
+    <string name="settings">Settings</string>
+    <string name="logout">Logout</string>
+    
+    <!-- Product Details -->
+    <string name="price_format">$%.2f</string>
+    <string name="rating_format">%.1f</string>
+    <string name="reviews_format">(%d)</string>
+    <string name="stock_quantity">Stock: %d</string>
+    
+    <!-- Search -->
+    <string name="no_results_found">No results found</string>
+    <string name="search_products">Search products...</string>
+    
+    <!-- Actions -->
+    <string name="refresh">Refresh</string>
+    <string name="filter">Filter</string>
+    <string name="sort">Sort</string>
+    <string name="clear">Clear</string>
+    <string name="apply">Apply</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    
 </resources>
